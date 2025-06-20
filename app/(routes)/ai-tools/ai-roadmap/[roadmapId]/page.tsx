@@ -27,6 +27,7 @@ interface RoadmapNodeData {
   duration?: string;
   status?: string;
   link?: string;
+  [key: string]: unknown;
 }
 
 interface RoadmapNode extends Node {
@@ -217,37 +218,37 @@ const Page = () => {
         <div className="flex flex-col space-y-6 w-full max-w-md mx-auto">
           {roadmapDetails?.initialNodes?.map((node, idx) => {
             let bgColor = "from-orange-400 to-red-600";
-            if (node.data?.bgColor) bgColor = node.data.bgColor;
+            if (typeof node.data?.bgColor === 'string') bgColor = node.data.bgColor;
             return (
               <React.Fragment key={node.id || idx}>
                 <div className={`bg-gradient-to-br ${bgColor} border border-gray-200 rounded-lg p-4 shadow-lg w-full transition-all hover:shadow-xl`}>
                   <div className="space-y-3">
                     <h3 className="font-semibold text-base text-white bg-gradient-to-r from-pink-500 to-red-500 bg-clip-text text-transparent">
-                      {node.data?.title || node.title}
+                      {node.data?.title}
                     </h3>
-                    <p className="text-sm text-gray-100 line-clamp-3">{node.data?.description || node.description}</p>
-                    { (node.data?.duration || node.duration) && (
+                    <p className="text-sm text-gray-100 line-clamp-3">{node.data?.description}</p>
+                    { node.data?.duration && (
                       <div className="flex items-center text-xs text-gray-200">
                         <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        {node.data?.duration || node.duration}
+                        {node.data?.duration}
                       </div>
                     )}
-                    { (node.data?.status || node.status) && (
+                    { node.data?.status && (
                       <div className="mt-2">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                          ${ (node.data?.status || node.status) === 'completed' ? 'bg-green-500 text-white' :
-                            (node.data?.status || node.status) === 'in-progress' ? 'bg-blue-500 text-white' :
+                          ${ node.data?.status === 'completed' ? 'bg-green-500 text-white' :
+                            node.data?.status === 'in-progress' ? 'bg-blue-500 text-white' :
                             'bg-gray-500 text-white'}`}
                         >
-                          {node.data?.status || node.status}
+                          {node.data?.status}
                         </span>
                       </div>
                     )}
-                    { (node.data?.link || node.link) && (
+                    { node.data?.link && (
                       <a
-                        href={node.data?.link || node.link}
+                        href={node.data?.link}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center mt-2 text-sm font-medium text-yellow-100 hover:text-yellow-300 transition-colors"
