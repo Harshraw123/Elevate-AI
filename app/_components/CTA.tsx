@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { ArrowDown } from "lucide-react";
+import Link from "next/link";
 
 const CTA = () => {
   return (
@@ -25,20 +26,22 @@ const CTA = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
-            <Button 
+           <Link href={'/dashboard'}> <Button 
               size="lg" 
               className="gradient-primary text-white hover:opacity-90 transition-all duration-300 transform hover:scale-105 px-10 py-5 text-xl font-semibold glow-box"
             >
               <ArrowDown className="mr-3 h-6 w-6" />
               START YOUR JOURNEY
             </Button>
-            <Button 
+            </Link>
+          <Link href={'/dashboard'}>  <Button 
               size="lg" 
               variant="outline" 
-              className="border-border hover:bg-accent px-10 py-5 text-xl"
+              className="border-border hover:bg-accent px-10 py-5 text-xl font-bold"
             >
-              Watch Demo
+             Try for free
             </Button>
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
