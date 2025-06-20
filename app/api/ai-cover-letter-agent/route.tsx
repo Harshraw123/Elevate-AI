@@ -61,7 +61,7 @@ export async function POST(req: Request) {
 }
 
 // ✅ Moved outside and exported cleanly
-export async function getRuns(runId: string) {
+ async function getRuns(runId: string) {
   const result = await axios.get(
     `${process.env.INNGEST_SERVER_HOST}/v1/events/${runId}/runs`,
     {

@@ -265,4 +265,6 @@ const Aichat: React.FC<AichatProps> = ({ selectedQuery }) => {
   );
 };
 
-export default Aichat;
+export default function Page(props: any) {
+  return <Aichat {...props} />;
+}

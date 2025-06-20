@@ -28,9 +28,8 @@ return NextResponse.json({ output: content });
 
 }
 
-export async function getRuns(runId: string) {
+async function getRuns(runId: string) {
   const result = await axios.get(
-
     `${process.env.INNGEST_SERVER_HOST}/v1/events/${runId}/runs`,
     {
       headers: {
