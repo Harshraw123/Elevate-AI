@@ -56,11 +56,11 @@ const Features = () => {
           {features.map((feature, index) => (
             <Card 
               key={index} 
-              className="bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/50 transition-all duration-300 transform hover:scale-105 hover:shadow-xl group animate-slide-up"
+              className="bg-card/50 backdrop-blur-sm border-border/50 hover: transition-all duration-300 transform hover: animate-slide-up"
               style={{animationDelay: `${index * 0.1}s`}}
             >
               <CardHeader>
-                <div className={`w-16 h-16 ${feature.gradient} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                <div className={`w-16 h-16 ${feature.gradient} rounded-xl flex items-center justify-center mb-4 `}>
                   <span className="text-2xl">{feature.icon}</span>
                 </div>
                 <CardTitle className="text-xl font-semibold text-foreground">
