@@ -1,0 +1,11 @@
+{
+  "/api/inngest/route": "app/api/inngest/route.js",
+  "/api/history/route": "app/api/history/route.js",
+  "/api/ai-roadmap-agent/route": "app/api/ai-roadmap-agent/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/page": "app/page.js",
+  "/(routes)/dashboard/page": "app/(routes)/dashboard/page.js",
+  "/(routes)/ai-tools/ai-chat/[chatid]/page": "app/(routes)/ai-tools/ai-chat/[chatid]/page.js",
+  "/(routes)/ai-tools/ai-resume/[resumeId]/page": "app/(routes)/ai-tools/ai-resume/[resumeId]/page.js",
+  "/(routes)/ai-tools/ai-roadmap/[roadmapId]/page": "app/(routes)/ai-tools/ai-roadmap/[roadmapId]/page.js"
+}

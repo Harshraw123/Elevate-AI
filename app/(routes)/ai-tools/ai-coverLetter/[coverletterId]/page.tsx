@@ -68,19 +68,13 @@ const CoverLetterPage = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-5 p-8 bg-white rounded-lg shadow-lg shadow-slate-800 text-black">
-      <div className="flex justify-between items-center mb-6">
+    <div className="max-w-2xl mx-auto mt-5 p-4 sm:p-8 bg-white rounded-lg shadow-lg shadow-slate-800 text-black">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4 sm:gap-0">
         <h1 className="text-2xl font-bold text-black">Your Cover Letter</h1>
-        <div className="flex gap-2">
-          <button
-            onClick={handleDownload}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-          >
-            Download as TXT
-          </button>
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <button
             onClick={handleDownloadPDF}
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition w-full sm:w-auto"
           >
             Download as PDF
           </button>

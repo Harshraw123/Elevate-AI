@@ -29,7 +29,7 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en" className="dark"><body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}><Provider>{children}</Provider></body></html>
+      <html lang="en" className="dark"><body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-foreground`}><Provider>{children}</Provider></body></html>
     </ClerkProvider>
   );
 }

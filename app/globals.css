@@ -97,7 +97,7 @@ body {
 
   body {
     @apply bg-background text-foreground;
-    background: linear-gradient(135deg, #070808 0%, #000000  50%, #020205 100%);
+    background: linear-gradient(135deg, #000000 0%, #000000  50%, #000000 100%);
   }
 }
 
