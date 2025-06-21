@@ -288,13 +288,14 @@ const Hero: React.FC = () => {
                 </span>
               </Button>
             </Link>
-            <Button
+           <Link href={'/dashboard'}> <Button
               size="lg"
               variant="outline"
               className="bg-white/5 backdrop-blur-xl border-white/20 hover:bg-white/10 text-white px-6 md:px-10 py-3 md:py-4 text-base md:text-lg font-semibold rounded-2xl"
             >
               Learn More
             </Button>
+            </Link>
           </div>
 
           {/* Image section */}
