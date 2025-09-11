@@ -23,13 +23,13 @@ const items = [
     },
     {
         title: "AI Tools",
-        url: "/dashboard#aiTools",
+        url: "/dashboard/aiTools",
         icon: Inbox,
         scrollId: "aiTools",
     },
     {
         title: "My History",
-        url: "/dashboard#history",
+        url: "/dashboard/history",
         icon: Calendar,
         scrollId: "history",
     },

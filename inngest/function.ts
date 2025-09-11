@@ -55,7 +55,93 @@ export const handleAiCareerQuery = inngest.createFunction(
 );
 
 
+export const AiResumeSummeryAgent = createAgent({
+  name: "AiResumeSummeryAgent",
+  description: "Generates resume summaries for different job levels.",
+  system: `You are an AI agent that generates professional resume summaries. 
+You will receive a 'jobTitle' as input and must respond ONLY with a valid JSON array. 
+Each object should have:
+- "level": one of ["Fresher", "Entry", "Mid", "Senior"]
+- "summary": a 100–150 word professional summary tailored to the given job title.
 
+Example format:
+[
+  { "level": "Fresher", "summary": "..." },
+  { "level": "Entry", "summary": "..." },
+  { "level": "Mid", "summary": "..." },
+  { "level": "Senior", "summary": "..." }
+]
+
+Do not include any extra text outside of the JSON array.`,
+  model: gemini({
+    model: "gemini-2.0-flash",
+    apiKey: process.env.GEMINI_API_KEY,
+  }),
+});
+
+
+export const AiResumeBulletPointsAgent = createAgent({
+  name: "AiResumeBulletPointsAgent",
+  description: "Generates 6-7 professional bullet points for a resume based on a given job title.",
+  system: `You are an AI agent that generates professional resume bullet points.
+You will receive a 'jobTitle' as input and must respond ONLY with a valid JSON array of strings. 
+Each string should be a concise, impactful bullet point (8–15 words) tailored to the given job title.
+Generate exactly 6–7 points that could be displayed in an unordered list on a resume.
+
+Example format:
+[
+  "Proficient in developing responsive web applications using React and TypeScript",
+  "Collaborated with cross-functional teams to deliver projects ahead of schedule",
+  "Optimized backend APIs for faster data retrieval and improved scalability",
+  "Implemented automated testing to ensure high-quality code delivery",
+  "Designed intuitive user interfaces enhancing user engagement by 20%",
+  "Maintained clear documentation for seamless team onboarding"
+]
+
+Do not include any extra text outside of the JSON array.`,
+  model: gemini({
+    model: "gemini-2.0-flash",
+    apiKey: process.env.GEMINI_API_KEY,
+  }),
+});
+
+
+
+export const handleAiResumeBulletPoints = inngest.createFunction(
+  { id: 'AiResumeBulletPoints' },
+  { event: 'AiResumeBulletPoints' },
+  async ({ event }) => {
+    const { jobTitle } = event?.data;
+    if (!jobTitle) return { message: "Error: No job title provided." };
+
+    const agentResponse = await AiResumeBulletPointsAgent.run(jobTitle);
+
+    return {
+      status: "success",
+      query: jobTitle,
+      response: agentResponse,
+      message: "AI resume bullet points generated successfully.",
+    };
+  },
+);
+
+export const handleAiResumeSummery = inngest.createFunction(
+  { id: 'AiResumeSummery' },
+  { event: 'AiResumeSummery' },
+  async ({ event }) => {
+    const { jobTitle } = event?.data;
+    if (!jobTitle) return { message: "Error: No job title provided." };
+
+    const agentResponse = await AiResumeSummeryAgent.run(jobTitle);
+
+    return {
+      status: "success",
+      query: jobTitle,
+      response: agentResponse,
+      message: "AI resume summary generated successfully.",
+    };
+  },
+);
 
 
 
@@ -74,7 +160,7 @@ const imagekit = new ImageKit({
   
   📥 INPUT: You will receive either a resume as plain text or OCR-extracted content from an image.
   
-  🎯 GOAL: Analyze the resume and return a structured JSON object based on the criteria below. Do not include any extra commentary or text outside the JSON.
+  🎯 GOAL: Analyze the resume and return a structured JSON object based on the criteria below. Do not include any extra commentary or text outside ,use minimal but impactful words the JSON.
   
   🧾 OUTPUT FORMAT (strict JSON):
   
@@ -120,6 +206,7 @@ const imagekit = new ImageKit({
   3. Formatting, layout, and readability
   4. Keyword usage for ATS optimization
   5. Overall impact and presentation quality
+  
   
   Return only a valid JSON object as shown above. No additional explanations.
   `,

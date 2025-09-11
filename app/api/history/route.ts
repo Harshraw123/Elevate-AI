@@ -6,7 +6,6 @@ import { eq } from 'drizzle-orm';
 import {currentUser} from '@clerk/nextjs/server';
 import { HistoryTable } from '@/configs/schema';
 
-
 export async function POST(req: Request) {
     const user = await currentUser();
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -31,7 +30,6 @@ export async function POST(req: Request) {
   
 
   
-
 
 
 export async function PUT(req: Request) {
@@ -63,6 +61,7 @@ export async function PUT(req: Request) {
       return NextResponse.json({ error: "DB Error" }, { status: 500 });
     }
   }
+
 
 
 
@@ -99,3 +98,34 @@ export async function PUT(req: Request) {
       return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
   }
+
+export async function DELETE(req: Request) {
+  try {
+    const user = await currentUser();
+    if (!user || !user.primaryEmailAddress?.emailAddress) {
+      return NextResponse.json({ error: "Unauthorized or missing email address" }, { status: 401 });
+    }
+    
+    const url = new URL(req.url);
+    const id = url.searchParams.get("id");
+    
+    if (!id) {
+      return NextResponse.json({ error: "Missing ID parameter" }, { status: 400 });
+    }
+
+    // Delete the record
+    const result = await db
+      .delete(HistoryTable)
+      .where(eq(HistoryTable.id, parseInt(id)))
+      .returning();
+
+    if (result.length === 0) {
+      return NextResponse.json({ error: "Record not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true, message: "Record deleted successfully" });
+  } catch (error) {
+    console.error("DELETE /api/history error:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}

@@ -1,8 +1,31 @@
+'use client'
 import Navbar from './_components/Navbar'
-import Hero from './_components/Hero'
 import Feature from './_components/Feature'
 import CTA from './_components/CTA'
-import { AnimatedTestimonialsDemo } from './_components/AnimatedTestimonial'
+import LoadingSpinner from './_components/LoadingSpinner'
+import dynamic from 'next/dynamic';
+const Hero = dynamic(() => import('./_components/Hero'), { 
+  ssr: false, 
+  loading: () => (
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="text-center">
+        <LoadingSpinner size="lg" />
+        <p className="text-muted-foreground mt-4">Preparing your experience...</p>
+      </div>
+    </div>
+  )
+});
+const AnimatedTestimonialsDemo = dynamic(() => import('./_components/AnimatedTestimonial'), { 
+  ssr: false, 
+  loading: () => (
+    <div className="flex items-center justify-center py-20">
+      <div className="text-center">
+        <LoadingSpinner size="md" />
+        <p className="text-muted-foreground mt-4">Loading testimonials...</p>
+      </div>
+    </div>
+  )
+});
 import { TrendingUp } from 'lucide-react'
 
 

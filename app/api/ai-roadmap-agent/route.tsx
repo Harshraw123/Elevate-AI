@@ -8,6 +8,8 @@ export async function POST(req:Request){
 
     const{roadmapId,userInput}=await req.json();
 
+    
+
     if (!roadmapId || !userInput) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }

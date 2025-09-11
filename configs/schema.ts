@@ -16,3 +16,4 @@ userEmail: varchar('userEmail').references(()=>usersTable.email),
    aiAgentType:varchar('aiAgentType'),
 
 })
+

@@ -47,80 +47,98 @@ const Hero: React.FC = () => {
     if (!g || !ST) return;
 
     const ctx = g.context(() => {
-      // Set initial states
-      g.set([titleRef.current, subtitleRef.current, ctaRef.current], {
-        opacity: 0,
-        y: 50
-      });
-      g.set(badgeRef.current, { opacity: 0, y: 50 }); // For entrance only
-      g.set(imageRef.current, {
-        opacity: 0,
-        scale: 0.8,
-        rotationX: 15
-      });
+      // Set initial states with null checks
+      const textElements = [titleRef.current, subtitleRef.current, ctaRef.current].filter(Boolean);
+      if (textElements.length > 0) {
+        g.set(textElements, {
+          opacity: 0,
+          y: 50
+        });
+      }
+      
+      if (badgeRef.current) {
+        g.set(badgeRef.current, { opacity: 0, y: 50 });
+      }
+      
+      if (imageRef.current) {
+        g.set(imageRef.current, {
+          opacity: 0,
+          scale: 0.8,
+          rotationX: 15
+        });
+      }
 
       // Floating blobs with morphing
-      g.to(blob1Ref.current, {
-        x: "random(-50, 50)",
-        y: "random(-30, 30)",
-        scale: "random(0.8, 1.2)",
-        rotation: 360,
-        duration: "random(8, 12)",
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut"
-      });
+      if (blob1Ref.current) {
+        g.to(blob1Ref.current, {
+          x: "random(-50, 50)",
+          y: "random(-30, 30)",
+          scale: "random(0.8, 1.2)",
+          rotation: 360,
+          duration: "random(8, 12)",
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut"
+        });
+      }
 
-      g.to(blob2Ref.current, {
-        x: "random(-40, 40)",
-        y: "random(-30, 30)",
-        scale: "random(0.9, 1.3)",
-        rotation: -360,
-        duration: "random(10, 15)",
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        delay: 1
-      });
+      if (blob2Ref.current) {
+        g.to(blob2Ref.current, {
+          x: "random(-40, 40)",
+          y: "random(-30, 30)",
+          scale: "random(0.9, 1.3)",
+          rotation: -360,
+          duration: "random(10, 15)",
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+          delay: 1
+        });
+      }
 
-      g.to(blob3Ref.current, {
-        x: "random(-45, 45)",
-        y: "random(-20, 20)",
-        scale: "random(0.7, 1.1)",
-        rotation: 360,
-        duration: "random(12, 18)",
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        delay: 2
-      });
+      if (blob3Ref.current) {
+        g.to(blob3Ref.current, {
+          x: "random(-45, 45)",
+          y: "random(-20, 20)",
+          scale: "random(0.7, 1.1)",
+          rotation: 360,
+          duration: "random(12, 18)",
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+          delay: 2
+        });
+      }
 
       // Main entrance timeline
       const tl = g.timeline({
         delay: 0.5,
         onComplete: () => {
-          // Add subtle continuous animations after entrance
-          g.to(titleRef.current, {
-            y: -3,
-            duration: 2,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut"
-          });
+          // Floating animation removed as requested.
         }
       });
 
-      tl.to(badgeRef.current, { opacity: 1, y: 0, duration: 0.8, ease: "back.out(1.7)" })
-        .to(titleRef.current, { opacity: 1, y: 0, duration: 1, ease: "power3.out" }, "-=0.3")
-        .to(subtitleRef.current, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, "-=0.5")
-        .to(ctaRef.current, { opacity: 1, y: 0, duration: 0.8, ease: "back.out(1.7)" }, "-=0.4")
-        .to(imageRef.current, {
+      if (badgeRef.current) {
+        tl.to(badgeRef.current, { opacity: 1, y: 0, duration: 0.8, ease: "back.out(1.7)" });
+      }
+      if (titleRef.current) {
+        tl.to(titleRef.current, { opacity: 1, y: 0, duration: 1, ease: "power3.out" }, "-=0.3");
+      }
+      if (subtitleRef.current) {
+        tl.to(subtitleRef.current, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, "-=0.5");
+      }
+      if (ctaRef.current) {
+        tl.to(ctaRef.current, { opacity: 1, y: 0, duration: 0.8, ease: "back.out(1.7)" }, "-=0.4");
+      }
+      if (imageRef.current) {
+        tl.to(imageRef.current, {
           opacity: 1,
           scale: 1,
           rotationX: 0,
           duration: 1.2,
           ease: "power2.out"
         }, "-=0.6");
+      }
 
       // ScrollTrigger for parallax and fade effects (excluding badge)
       ST.create({
@@ -130,28 +148,39 @@ const Hero: React.FC = () => {
         scrub: 1,
         onUpdate: (self: { progress: number }) => {
           const progress = self.progress;
-          g.set(imageRef.current, {
-            y: progress * 100,
-            scale: 1 + progress * 0.1,
-            rotationX: progress * 10
-          });
-          g.set(titleRef.current, {
-            scale: 1 - progress * 0.2,
-            opacity: 1 - progress * 0.8,
-            y: -progress * 50
-          });
-          g.set(subtitleRef.current, {
-            opacity: 1 - progress * 1.2,
-            y: -progress * 30
-          });
-          g.set(ctaRef.current, {
-            opacity: 1 - progress * 1.5,
-            y: -progress * 40
-          });
-          g.set([blob1Ref.current, blob2Ref.current, blob3Ref.current], {
-            scale: 1 + progress * 0.5,
-            opacity: 0.3 - progress * 0.2
-          });
+          if (imageRef.current) {
+            g.set(imageRef.current, {
+              y: progress * 100,
+              scale: 1 + progress * 0.1,
+              rotationX: progress * 10
+            });
+          }
+          if (titleRef.current) {
+            g.set(titleRef.current, {
+              scale: 1 - progress * 0.2,
+              opacity: 1 - progress * 0.8,
+              y: -progress * 50
+            });
+          }
+          if (subtitleRef.current) {
+            g.set(subtitleRef.current, {
+              opacity: 1 - progress * 1.2,
+              y: -progress * 30
+            });
+          }
+          if (ctaRef.current) {
+            g.set(ctaRef.current, {
+              opacity: 1 - progress * 1.5,
+              y: -progress * 40
+            });
+          }
+          const blobs = [blob1Ref.current, blob2Ref.current, blob3Ref.current].filter(Boolean);
+          if (blobs.length > 0) {
+            g.set(blobs, {
+              scale: 1 + progress * 0.5,
+              opacity: 0.3 - progress * 0.2
+            });
+          }
         }
       });
 
@@ -288,7 +317,7 @@ const Hero: React.FC = () => {
                 </span>
               </Button>
             </Link>
-           <Link href={'/dashboard'}> <Button
+           <Link  href={'/dashboard'} > <Button
               size="lg"
               variant="outline"
               className="bg-white/5 backdrop-blur-xl border-white/20 hover:bg-white/10 text-white px-6 md:px-10 py-3 md:py-4 text-base md:text-lg font-semibold rounded-2xl"
@@ -302,7 +331,7 @@ const Hero: React.FC = () => {
           <div ref={imageRef} className="relative mx-auto max-w-4xl md:max-w-6xl perspective-1000">
             <div className="relative bg-white/5 backdrop-blur-xl rounded-2xl md:rounded-3xl overflow-hidden border border-white/20 shadow-2xl">
               <Image
-                src="/Hero.jpg"
+                src="/Hero.Avif"
                 alt="AI Career Coach Interface"
                 width={1200}
                 height={600}

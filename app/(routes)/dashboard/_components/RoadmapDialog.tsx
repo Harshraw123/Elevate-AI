@@ -41,12 +41,7 @@ const RoadmapDialog = ({
       console.log("AI Roadmap response:", response);
 
       if (response) {
-        // Create history record for roadmap
-        await axios.post("/api/history", {
-          content: [],
-          recordId: roadmapId,
-          aiAgentType: "Learning Roadmap",
-        });
+  ;
         router.push(`/ai-tools/ai-roadmap/${roadmapId}`);
       }
     } catch (error) {

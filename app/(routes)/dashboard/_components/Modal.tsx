@@ -48,12 +48,12 @@ const Modal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) =>
       alert("✅ Resume uploaded and analysis started!");
 
       if (response) {
-        // Create history record for resume
-        await axios.post("/api/history", {
-          content: [],
-          recordId,
-          aiAgentType: "AI Resume Analyzer",
-        });
+        // [REMOVED] History creation moved to inngest function to prevent duplicates
+        // await axios.post("/api/history", {
+        //   content: response.data.output ? [response.data.output] : [],
+        //   recordId,
+        //   aiAgentType: "AI Resume Analyzer",
+        // });
         router.push(`/ai-tools/ai-resume/${recordId}`);
         setUploading(false);
       }
@@ -111,7 +111,7 @@ const Modal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) =>
 
         <DialogFooter>
           <button
-            type="submit"
+           
             onClick={handleSubmit}
             disabled={!file}
             className="bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:bg-slate-700 font-bold text-white px-4 py-2 rounded-md transition"

@@ -55,12 +55,12 @@ const AiCoverLetterForm: React.FC<AiCoverLetterFormProps> = ({
       toast.success("✅ Cover letter generation started!");
 
       if (response.data?.output) {
-        // Create history record for cover letter
-        await axios.post("/api/history", {
-          content: [],
-          recordId: coverLetterId,
-          aiAgentType: "Cover Letter Generator",
-        });
+        // [REMOVED] History creation moved to inngest function to prevent duplicates
+        // await axios.post("/api/history", {
+        //   content: [response.data.output],
+        //   recordId: coverLetterId,
+        //   aiAgentType: "Cover Letter Generator",
+        // });
         router.push("/ai-tools/ai-coverLetter/" + coverLetterId);
       }
 

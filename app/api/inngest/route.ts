@@ -1,8 +1,13 @@
 import { serve } from "inngest/next";
 import { inngest } from "../../../inngest/client";
-import {  AiRoadmapGenerator, handleAiCareerQuery,AiCoverLetterAgent } from "@/inngest/function";
-
-import { AiResumeAgent } from "@/inngest/function";
+import {  
+  AiRoadmapGenerator, 
+  handleAiCareerQuery,
+  AiCoverLetterAgent,
+  AiResumeAgent,
+  handleAiResumeSummery,
+  handleAiResumeBulletPoints
+} from "@/inngest/function";
 
 // Serve the registered Inngest function(s)
 export const { GET, POST, PUT } = serve({
@@ -12,7 +17,7 @@ export const { GET, POST, PUT } = serve({
     AiResumeAgent,
     AiRoadmapGenerator,
     AiCoverLetterAgent,
-    
-
+    handleAiResumeSummery,
+    handleAiResumeBulletPoints
   ],
 });

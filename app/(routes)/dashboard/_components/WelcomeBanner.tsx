@@ -12,7 +12,7 @@ const WelcomeBanner: React.FC = () => {
       <div className="relative max-w-6xl mx-auto sm:rounded-3xl overflow-hidden shadow-2xl">
         <Image
           className="w-full h-72 sm:h-80 md:h-[22rem] lg:h-[26rem] object-cover"
-          src="/banner2.jpg"
+          src="/Banner.avif"
           alt="AI Career Banner"
           width={1200}
           height={400}
@@ -20,13 +20,13 @@ const WelcomeBanner: React.FC = () => {
         />
 
         {/* Dark Overlay */}
-        <div className="absolute inset-0 bg-black/80" />
+        <div className="absolute inset-0" />
 
         {/* Centered Content */}
         <div className="absolute inset-0 flex items-center justify-center px-4">
           <div className="w-full max-w-3xl">
             {/* Glassmorphism Card */}
-            <div className="bg-black/50 backdrop-blur-md p-6 sm:p-8 rounded-2xl shadow-lg text-center flex flex-col items-center">
+            <div className="bg-black/20 backdrop-blur-md p-6 sm:p-8 rounded-2xl shadow-lg text-center flex flex-col items-center">
               
               {/* Icon Row */}
               <div className="flex gap-3 sm:gap-5 mb-5">
