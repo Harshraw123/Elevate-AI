@@ -331,7 +331,7 @@ const Hero: React.FC = () => {
           <div ref={imageRef} className="relative mx-auto max-w-4xl md:max-w-6xl perspective-1000">
             <div className="relative bg-white/5 backdrop-blur-xl rounded-2xl md:rounded-3xl overflow-hidden border border-white/20 shadow-2xl">
               <Image
-                src="/Hero.Avif"
+                src="/Hero.avif"
                 alt="AI Career Coach Interface"
                 width={1200}
                 height={600}
