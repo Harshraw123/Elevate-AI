@@ -2,7 +2,7 @@ import { inngest } from "@/inngest/client";
 import axios from "axios";
 import { NextResponse } from "next/server";
 
-export async function POST(request: any) {
+export async function POST(request: Request) {
 
   const{userInput}=await request.json();
   const resultIds=await inngest.send({
@@ -13,7 +13,7 @@ export async function POST(request: any) {
 
   })
 const runId=resultIds.ids[0];
-let runStatus;
+let runStatus: RunStatus;
 while(true){
   runStatus=await getRuns(runId)
   if(runStatus?.data[0]?.status==="Completed")
@@ -28,8 +28,21 @@ return NextResponse.json({ output: content });
 
 }
 
-async function getRuns(runId: string) {
-  const result = await axios.get(
+interface RunStatus {
+  data: Array<{
+    status: string;
+    output?: {
+      response?: {
+        output?: Array<{
+          content: string;
+        }>;
+      };
+    };
+  }>;
+}
+
+async function getRuns(runId: string): Promise<RunStatus> {
+  const result = await axios.get<RunStatus>(
     `${process.env.INNGEST_SERVER_HOST}/v1/events/${runId}/runs`,
     {
       headers: {

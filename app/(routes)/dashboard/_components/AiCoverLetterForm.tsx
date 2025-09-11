@@ -47,7 +47,7 @@ const AiCoverLetterForm: React.FC<AiCoverLetterFormProps> = ({
     };
 
     try {
-      const response = await axios.post(
+      const response = await axios.post<{ output?: string }>(
         "/api/ai-cover-letter-agent",
         coverLetterData
       );
@@ -104,7 +104,7 @@ const AiCoverLetterForm: React.FC<AiCoverLetterFormProps> = ({
           {/* Position */}
           <div className="space-y-1">
             <label className="text-sm font-medium flex items-center gap-2 text-gray-400">
-              <Briefcase size={16} /> Position You're Applying For
+              <Briefcase size={16} /> Position You&apos;re Applying For
             </label>
             <input
               type="text"

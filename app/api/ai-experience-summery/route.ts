@@ -17,25 +17,25 @@ export async function POST(request: Request) {
   });
 
   const runId = resultIds.ids[0];
-  let runStatus;
+  let runStatus: { data?: Array<{ status?: string; output?: unknown }> } = { data: [] };
   let attempts = 0;
 
   while (attempts < 60) { // ~30 seconds max
-    runStatus = await getRuns(runId);
-    if (runStatus?.data[0]?.status === "Completed") break;
+    runStatus = (await getRuns(runId)) as { data?: Array<{ status?: string; output?: unknown }> };
+    if (runStatus?.data?.[0]?.status === "Completed") break;
     await new Promise(res => setTimeout(res, 500));
     attempts++;
   }
 
   // Extract the actual response from Inngest
-  const inngestResponse = runStatus?.data[0]?.output?.response;
+  const inngestResponse = (runStatus?.data?.[0]?.output as { response?: unknown })?.response;
   
   if (!inngestResponse) {
     return NextResponse.json({ error: "No response from AI agent" }, { status: 500 });
   }
 
   // The response has the structure: { agentName, output: [{ content: "```json..." }] }
-  const rawContent = inngestResponse.output?.[0]?.content || "[]";
+  const rawContent = (inngestResponse as { output?: Array<{ content?: string }> })?.output?.[0]?.content || "[]";
   
   // Remove markdown json wrapper if present
   const cleanContent = rawContent.replace(/```json\n?/g, '').replace(/```/g, '').trim();

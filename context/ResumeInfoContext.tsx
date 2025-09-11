@@ -13,7 +13,7 @@ export interface ResumeInfo {
   linkedin?: string;
   website?: string;
   themeColor: string;
-  summery: string;
+  summary: string;
   experience: Array<{
     id: number;
     title: string;
@@ -23,7 +23,7 @@ export interface ResumeInfo {
     startDate: string;
     endDate: string;
     currentlyWorking: boolean;
-    workSummery: string;
+    workSummary: string;
   }>;
   education: Array<{
     id: number;

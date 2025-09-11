@@ -52,6 +52,36 @@ interface RoadmapData {
   initialEdges: RoadmapEdge[];
 }
 
+interface HistoryResponseItem {
+  content: {
+    initialNodes: Array<{
+      id?: string;
+      title?: string;
+      description?: string;
+      duration?: string;
+      status?: string;
+      link?: string;
+      position?: { x: number; y: number };
+      data?: {
+        title?: string;
+        description?: string;
+        duration?: string;
+        status?: string;
+        link?: string;
+      };
+    }>;
+    initialEdges?: Array<{
+      id?: string;
+      source: string;
+      target: string;
+      animated?: boolean;
+    }>;
+    roadmapTitle?: string;
+    description?: string;
+    duration?: string;
+  };
+}
+
 const proOptions = { hideAttribution: true };
 
 const Page = () => {
@@ -64,19 +94,17 @@ const Page = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState<RoadmapEdge>([]);
 
   const GetRoadmapDetails = useCallback(async () => {
-    if (!roadmapId) {
-      setError("Roadmap ID is not present");
-      setIsLoading(false);
-      return;
-    }
-
+    if (!roadmapId) return;
+    
     setIsLoading(true);
     setError(null);
-
+    
     try {
-      const response = await axios.get(`/api/history?chatid=${roadmapId}`);
-      if (response.status === 200 && response.data?.[0]?.content) {
-        const data = response.data[0].content;
+      const response = await axios.get<HistoryResponseItem[]>(`/api/history?chatid=${roadmapId}`);
+      const responseData = response.data;
+      
+      if (response.status === 200 && responseData?.[0]?.content) {
+        const data = responseData[0].content;
         
         // Validate required data structure
         if (!data.initialNodes || !Array.isArray(data.initialNodes)) {
@@ -84,60 +112,63 @@ const Page = () => {
         }
         
         // Transform the API response into nodes and edges
-        const transformedNodes: RoadmapNode[] = data.initialNodes.map((node: any, index: number) => ({
-          id: node.id || `node-${index}`,
-          type: 'custom',
-          position: node.position || { x: index * 300, y: Math.floor(index / 3) * 200 },
-          data: {
-            title: node.title || node.data?.title || 'Untitled',
-            description: node.description || node.data?.description || '',
-            duration: node.duration || node.data?.duration,
-            status: node.status || node.data?.status,
-            link: node.link || node.data?.link,
-          },
-        }));
+        const transformedNodes: RoadmapNode[] = data.initialNodes.map((node: HistoryResponseItem['content']['initialNodes'][number], index: number) => {
+          const nodeData = node.data || {};
+          return {
+            id: node.id || `node-${index}`,
+            type: 'custom' as const,
+            position: node.position || { x: index * 300, y: Math.floor(index / 3) * 200 },
+            data: {
+              title: node.title || nodeData.title || 'Untitled',
+              description: node.description || nodeData.description || '',
+              duration: node.duration || nodeData.duration,
+              status: node.status || nodeData.status,
+              link: node.link || nodeData.link,
+            },
+          };
+        });
 
-        const transformedEdges: RoadmapEdge[] = (data.initialEdges || []).map((edge: any, index: number) => ({
+        const transformedEdges: RoadmapEdge[] = (data.initialEdges || []).map((edge: NonNullable<HistoryResponseItem['content']['initialEdges']>[number], index: number) => ({
           id: edge.id || `edge-${index}`,
           source: edge.source,
           target: edge.target,
           animated: edge.animated || false,
-          type: 'smoothstep',
+          type: 'smoothstep' as const,
         }));
 
-        setRoadmapDetails(data);
+        setRoadmapDetails({
+          roadmapTitle: data.roadmapTitle || 'Untitled Roadmap',
+          description: data.description || '',
+          duration: data.duration || 'Not specified',
+          initialNodes: transformedNodes,
+          initialEdges: transformedEdges
+        });
         setNodes(transformedNodes);
         setEdges(transformedEdges);
       } else {
         throw new Error('No roadmap data found');
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error fetching roadmap:", error);
-      const errorMessage = axios.isAxiosError(error) 
-        ? `Failed to load roadmap: ${error.response?.status === 404 ? 'Roadmap not found' : 'Server error'}`
-        : 'Failed to load roadmap. Please try again later.';
+      let errorMessage = 'Failed to load roadmap. Please try again.';
+      
+if (error && typeof error === 'object' && 'isAxiosError' in error) {
+        const axiosError = error as { response?: { status?: number } };
+        errorMessage = `Failed to load roadmap: ${axiosError.response?.status === 404 ? 'Roadmap not found' : 'Server error'}`;
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
       setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
-  }, [roadmapId]);
+  }, [roadmapId, setNodes, setEdges]);
 
   useEffect(() => {
     GetRoadmapDetails();
   }, [GetRoadmapDetails]);
 
-  const getStatusColor = (status?: string) => {
-    switch (status?.toLowerCase()) {
-      case 'completed':
-        return 'bg-green-500 text-white';
-      case 'in-progress':
-        return 'bg-blue-500 text-white';
-      case 'pending':
-        return 'bg-yellow-500 text-white';
-      default:
-        return 'bg-gray-500 text-white';
-    }
-  };
 
   if (isLoading) {
     return (

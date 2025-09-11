@@ -25,16 +25,28 @@ const AIResumeAnalyzer = () => {
   const { resumeId } = useParams();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [analysis, setAnalysis] = useState<any>(null);
+  interface ResumeAnalysis {
+    overall_score?: number;
+    summary_comment?: string;
+    sections?: Record<string, {
+      score?: number;
+      feedback?: string;
+      suggestions?: string[];
+      strengths?: string[];
+      weaknesses?: string[];
+    }>;
+  }
+
+  const [analysis, setAnalysis] = useState<ResumeAnalysis | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`/api/history?chatid=${resumeId}`);
+        const response = await axios.get<Array<{ content?: ResumeAnalysis; metaData?: { imageUrl?: string } }>>(`/api/history?chatid=${resumeId}`);
         const data = response.data?.[0];
-        setAnalysis(data?.content);
-        setPdfUrl(data?.metaData?.imageUrl);
+        setAnalysis(data?.content || null);
+        setPdfUrl(data?.metaData?.imageUrl || null);
       } catch {
         setError("Failed to load resume analysis.");
       } finally {
@@ -95,15 +107,15 @@ const AIResumeAnalyzer = () => {
               <span className="text-base sm:text-lg lg:text-xl text-blue-300 font-medium"> /100</span>
             </p>
             <p className={`text-xs sm:text-sm lg:text-base font-medium ${
-              analysis.overall_score >= 85 ? "text-green-500" :
-              analysis.overall_score >= 70 ? "text-yellow-400" : 
+              (analysis.overall_score ?? 0) >= 85 ? "text-green-500" :
+              (analysis.overall_score ?? 0) >= 70 ? "text-yellow-400" : 
               "text-red-600"
             }`}>
-              {analysis.overall_score >= 85
+              {(analysis.overall_score ?? 0) >= 85
                 ? "⭐️Excellent!"
-                : analysis.overall_score >= 70
+                : (analysis.overall_score ?? 0) >= 70
                 ? "😃Good"
-                : analysis.overall_score >= 50
+                : (analysis.overall_score ?? 0) >= 50
                 ? "Needs Improvement"
                 : "☹️Poor"}
             </p>
@@ -136,7 +148,7 @@ const AIResumeAnalyzer = () => {
 
       {/* Section Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-        {Object.entries(analysis.sections || {}).map(([section, details]: any) => {
+        {Object.entries(analysis.sections || {}).map(([section, details]: [string, { score?: number; feedback?: string; suggestions?: string[]; strengths?: string[]; weaknesses?: string[] }]) => {
           const bgColor = cardColors[section] || "from-slate-800 to-slate-900";
           return (
             <div
@@ -179,13 +191,13 @@ const AIResumeAnalyzer = () => {
                 </div>
 
                 {/* Weaknesses */}
-                {details.weaknesses?.length > 0 && (
+                {(details.weaknesses?.length ?? 0) > 0 && (
                   <div>
                     <h4 className="text-red-300 font-semibold mb-2 text-sm sm:text-base">
                       🎯 Areas for Improvement
                     </h4>
                     <ul className="space-y-1 sm:space-y-2">
-                      {details.weaknesses.map((point: string, i: number) => (
+                      {details.weaknesses?.map((point: string, i: number) => (
                         <li key={i} className="text-xs sm:text-sm text-red-100 leading-relaxed flex items-start gap-2">
                           <span className="text-red-300 mt-1 flex-shrink-0">•</span>
                           <span>{point}</span>

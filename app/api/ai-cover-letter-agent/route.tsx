@@ -40,9 +40,15 @@ export async function POST(req: Request) {
     const runId = resultIds.ids[0];
     console.log("🟢 Inngest Run ID:", runId);
 
-    let runStatus;
+    interface RunOutput {
+      response?: {
+        output?: Array<{ content?: string }>;
+      };
+    }
+    
+    let runStatus: { data?: Array<{ status?: string; output?: RunOutput }> };
     while (true) {
-      runStatus = await getRuns(runId);
+      runStatus = (await getRuns(runId)) as { data?: Array<{ status?: string; output?: RunOutput }> };
       const status = runStatus?.data?.[0]?.status;
       console.log("⏳ Inngest run status:", status);
       if (status === "Completed") break;

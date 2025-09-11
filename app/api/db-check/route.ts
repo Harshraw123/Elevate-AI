@@ -22,7 +22,7 @@ export async function GET() {
       status: 'healthy',
       database: 'Neon (Drizzle ORM)',
       connection: 'HTTP Serverless',
-      currentTime: result[0]?.current_time || new Date().toISOString(),
+      currentTime: new Date().toISOString(),
       historyTableExists,
       ttfb: Date.now() - startTime,
       timestamp: new Date().toISOString(),
@@ -36,13 +36,13 @@ export async function GET() {
       }
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Database Check Error:', error);
     
     return NextResponse.json(
       { 
         status: 'unhealthy',
-        error: error.message || 'Database connection failed',
+        error: error instanceof Error ? error.message : 'Database connection failed',
         database: 'Neon (Drizzle ORM)',
         timestamp: new Date().toISOString(),
         ttfb: Date.now() - startTime

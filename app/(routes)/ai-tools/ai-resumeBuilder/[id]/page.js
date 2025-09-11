@@ -8,7 +8,7 @@ import { useParams } from 'next/navigation'
 import data from '../_components-right/data'
 import axios from 'axios'
 
-const page = () => {
+const Page = () => {
     const params = useParams()
     const [resumeInfo, setResumeInfo] = useState(data)
 
@@ -43,7 +43,7 @@ const page = () => {
     const updateSummary = (summary) => {
         setResumeInfo(prev => ({
             ...prev,
-            summery: summary
+            summary: summary
         }))
     }
 
@@ -55,8 +55,20 @@ const page = () => {
                 const historyData = response.data?.[0];
                 
                 if (historyData?.content) {
-                    const parsedContent = JSON.parse(historyData.content);
-                    if (parsedContent.resumeData && Object.keys(parsedContent.resumeData).length > 0) {
+                    // Check if content is already an object or needs parsing
+                    let parsedContent;
+                    if (typeof historyData.content === 'string') {
+                        try {
+                            parsedContent = JSON.parse(historyData.content);
+                        } catch (parseError) {
+                            console.error('Error parsing content:', parseError);
+                            parsedContent = null;
+                        }
+                    } else {
+                        parsedContent = historyData.content;
+                    }
+                    
+                    if (parsedContent?.resumeData && Object.keys(parsedContent.resumeData).length > 0) {
                         setResumeInfo(parsedContent.resumeData);
                         return;
                     }
@@ -120,5 +132,5 @@ const page = () => {
     )
 }
 
-export default page
+export default Page
 

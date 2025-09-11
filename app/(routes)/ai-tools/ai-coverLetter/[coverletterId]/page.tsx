@@ -37,9 +37,9 @@ const CoverLetterPage = () => {
           setContent('Unsupported content format.');
         }
 
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error fetching cover letter:', err);
-        setError(err.message || 'Error fetching cover letter');
+        setError(err instanceof Error ? err.message : 'Error fetching cover letter');
       } finally {
         setLoading(false);
       }

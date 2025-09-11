@@ -32,7 +32,7 @@ const RoadmapDialog = ({
     setLoading(true);
 
     try {
-      const result = await axios.post("/api/ai-roadmap-agent", {
+      const result = await axios.post<{ output?: string }>("/api/ai-roadmap-agent", {
         roadmapId,
         userInput,
       });

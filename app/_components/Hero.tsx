@@ -7,16 +7,16 @@ import Link from "next/link";
 import { useRef, useEffect, useCallback } from "react";
 
 interface GSAPModule {
-  gsap: any;
-  ScrollTrigger: any;
+  gsap: typeof import('gsap').gsap;
+  ScrollTrigger: typeof import('gsap/ScrollTrigger').ScrollTrigger;
 }
 
 interface ParticleElement extends HTMLDivElement {
   style: CSSStyleDeclaration;
 }
 
-let gsap: any = null;
-let ScrollTrigger: any = null;
+let gsap: typeof import('gsap').gsap | null = null;
+let ScrollTrigger: typeof import('gsap/ScrollTrigger').ScrollTrigger | null = null;
 
 const loadGSAP = async (): Promise<GSAPModule> => {
   if (typeof window !== 'undefined' && !gsap) {
@@ -26,7 +26,7 @@ const loadGSAP = async (): Promise<GSAPModule> => {
     ScrollTrigger = scrollTriggerModule.ScrollTrigger;
     gsap.registerPlugin(ScrollTrigger);
   }
-  return { gsap, ScrollTrigger };
+  return { gsap: gsap!, ScrollTrigger: ScrollTrigger! };
 };
 
 const Hero: React.FC = () => {
@@ -186,7 +186,7 @@ const Hero: React.FC = () => {
 
       // Magnetic button effect
       const buttons = ctaRef.current?.querySelectorAll('button, a') as NodeListOf<HTMLElement>;
-      const listeners: { el: HTMLElement; move: any; leave: any }[] = [];
+      const listeners: { el: HTMLElement; move: (e: MouseEvent) => void; leave: () => void }[] = [];
       buttons?.forEach((button) => {
         const handleMouseMove = (e: MouseEvent) => {
           const rect = button.getBoundingClientRect();

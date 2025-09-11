@@ -67,10 +67,10 @@ const PersonalDetailsPreview = ({resumeInfo}) => {
       <hr className='border-[1.5px] my-3' />
 
       {/* Summary */}
-      {resumeInfo?.summery && (
+      {resumeInfo?.summary && (
         <div className='text-left'>
           <p className='text-xs text-gray-800 leading-relaxed px-1'>
-            {resumeInfo.summery}
+            {resumeInfo.summary}
           </p>
         </div>
       )}

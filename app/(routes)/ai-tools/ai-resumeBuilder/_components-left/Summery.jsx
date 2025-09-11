@@ -8,31 +8,31 @@ import { useResumeInfo } from '@/context/ResumeInfoContext';
 const Summery = ({ onComplete, setActiveFormIndex, activeFormIndex }) => {
   const { resumeInfo,updateSummary } = useResumeInfo();
 
-  const [summery, setSummery] = useState('');
-  const [summeryOptions, setSummeryOptions] = useState([]);
+  const [summary, setSummary] = useState('');
+  const [summaryOptions, setSummaryOptions] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const jobTitle = resumeInfo?.jobTitle || '';
 
   // Load summary from context when component mounts
   useEffect(() => {
-    if (resumeInfo?.summery) {
-      setSummery(resumeInfo.summery);
+    if (resumeInfo?.summary) {
+      setSummary(resumeInfo.summary);
     }
-  }, [resumeInfo?.summery]);
+  }, [resumeInfo?.summary]);
 
   // Check if form is complete for enabling next button
   useEffect(() => {
-    const isComplete = summery.trim().length > 0;
+    const isComplete = summary.trim().length > 0;
     onComplete(isComplete);
-  }, [summery, onComplete]);
+  }, [summary, onComplete]);
 
   // Update context when summary changes
   useEffect(() => {
-    if (summery !== resumeInfo?.summery) {
-      updateSummary(summery);
+    if (summary !== resumeInfo?.summary) {
+      updateSummary(summary);
     }
-  }, [summery, updateSummary, resumeInfo?.summery]);
+  }, [summary, updateSummary, resumeInfo?.summary]);
 
   const generateAiSummeries = async () => {
     if (!jobTitle) {
@@ -50,7 +50,7 @@ const Summery = ({ onComplete, setActiveFormIndex, activeFormIndex }) => {
 
       // Expecting JSON array from AI
       if (Array.isArray(result)) {
-        setSummeryOptions(result);
+        setSummaryOptions(result);
     
         console.log('Summary options set:', result);
       } else {
@@ -78,22 +78,22 @@ const Summery = ({ onComplete, setActiveFormIndex, activeFormIndex }) => {
 
       {/* Summary textarea */}
       <Textarea
-        value={summery}
-        onChange={(e) => setSummery(e.target.value)}
+        value={summary}
+        onChange={(e) => setSummary(e.target.value)}
         className="p-2 mt-1"
         rows={5}
       />
 
       {/* AI options */}
-      {summeryOptions.length > 0 && (
+      {summaryOptions.length > 0 && (
         <div className="mt-4">
           <h3 className="font-semibold">AI Suggestions</h3>
           <div className="space-y-2 mt-2">
-            {summeryOptions.map((opt, idx) => (
+            {summaryOptions.map((opt, idx) => (
               <div
                 key={idx}
                 className="border p-2 rounded-md cursor-pointer hover:bg-purple-50"
-                onClick={() => setSummery(opt.summary)}
+                onClick={() => setSummary(opt.summary)}
               >
                 <p className="text-sm text-gray-500 font-semibold">{opt.level}</p>
                 <p className="text-sm">{opt.summary}</p>
@@ -107,7 +107,7 @@ const Summery = ({ onComplete, setActiveFormIndex, activeFormIndex }) => {
       <div className="flex justify-center pt-6">
         <Button 
           onClick={() => {
-            updateSummary(summery);
+            updateSummary(summary);
             setActiveFormIndex(activeFormIndex + 1);
           }}
           className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-2xl shadow-xl transition-all duration-300 transform hover:scale-105"

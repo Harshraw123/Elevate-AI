@@ -34,6 +34,7 @@ const mapAgentTypeToRoute = (aiAgentType: string): string => {
     'Learning Roadmap': 'ai-roadmap',
     'Cover Letter Generator': 'ai-coverLetter',
     'Voice Coach': 'ai-Coach/saved-conversations', // Special route for AI Coach
+    'resume_builder': 'ai-resumeBuilder', // Resume Builder mapping
   };
   return map[aiAgentType] || aiAgentType; // fallback to same if not mapped
 };
@@ -46,6 +47,7 @@ const getAgentIcon = (aiAgentType: string) => {
     'Learning Roadmap': <MapPin className="w-5 h-5" />,
     'Cover Letter Generator': <Mail className="w-5 h-5" />,
     'Voice Coach': <MessageCircle className="w-5 h-5" />,
+    'resume_builder': <Briefcase className="w-5 h-5" />,
   };
   return iconMap[aiAgentType] || <Sparkles className="w-5 h-5" />;
 };
@@ -82,6 +84,12 @@ const getAgentColors = (aiAgentType: string) => {
       border: 'border-cyan-500/20 hover:border-cyan-400/40',
       icon: 'text-cyan-400 bg-cyan-500/15',
       text: 'text-cyan-300'
+    },
+    'resume_builder': {
+      bg: 'bg-indigo-500/8',
+      border: 'border-indigo-500/20 hover:border-indigo-400/40',
+      icon: 'text-indigo-400 bg-indigo-500/15',
+      text: 'text-indigo-300'
     },
   };
   return colorMap[aiAgentType] || {

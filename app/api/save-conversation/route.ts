@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
 
   try {
     // Format the conversation as a readable transcript
-    const conversationText = messages.map((msg: any, index: number) => {
+    const conversationText = messages.map((msg: { timestamp: string; role: string; text: string }, index: number) => {
       const timestamp = new Date(msg.timestamp).toLocaleTimeString();
       return `[${timestamp}] ${msg.role === 'user' ? 'You' : 'AI Coach'}: ${msg.text}`;
     }).join('\n');

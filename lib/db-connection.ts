@@ -10,14 +10,14 @@ export async function checkConnectionHealth() {
     
     return {
       status: 'healthy',
-      timestamp: result[0]?.now || new Date().toISOString(),
+      timestamp: new Date().toISOString(),
       queryTime,
       database: 'Neon (Drizzle ORM)',
     };
-  } catch (error) {
+  } catch (error: unknown) {
     return {
       status: 'unhealthy',
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
       timestamp: new Date().toISOString(),
       database: 'Neon (Drizzle ORM)',
     };
@@ -25,15 +25,15 @@ export async function checkConnectionHealth() {
 }
 
 // TTFB Optimization: Optimized query function with Drizzle
-export async function executeQuery<T = any>(
+export async function executeQuerySingle<T = unknown>(
   queryText: string,
-  params: any[] = [],
-): Promise<T[]> {
+  params: unknown[] = [],
+): Promise<T | null> {
   try {
     const startTime = Date.now();
     
     // Use Drizzle's sql template for safe queries
-    const result = await db.execute(sql.raw(queryText, params));
+    const result = await db.execute(sql.raw(queryText));
     const queryTime = Date.now() - startTime;
     
     // TTFB Optimization: Log slow queries
@@ -41,7 +41,7 @@ export async function executeQuery<T = any>(
       console.warn(`Slow query detected: ${queryTime}ms - ${queryText.substring(0, 100)}...`);
     }
     
-    return result as T[];
+    return (result as unknown as T[]).length > 0 ? (result as unknown as T[])[0] : null;
   } catch (error) {
     console.error('Database query error:', error);
     throw error;
@@ -49,15 +49,15 @@ export async function executeQuery<T = any>(
 }
 
 // TTFB Optimization: Transaction helper with Drizzle
-export async function executeTransaction<T = any>(
-  queries: Array<{ text: string; params?: any[] }>,
+export async function executeTransaction<T = unknown>(
+  queries: Array<{ text: string; params?: unknown[] }>,
 ): Promise<T[]> {
   try {
     const results: T[] = [];
     
     // Drizzle handles transactions automatically
     for (const query of queries) {
-      const result = await db.execute(sql.raw(query.text, query.params || []));
+      const result = await db.execute(sql.raw(query.text));
       results.push(result as T);
     }
     

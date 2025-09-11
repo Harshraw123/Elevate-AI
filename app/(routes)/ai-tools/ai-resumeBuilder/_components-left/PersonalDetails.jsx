@@ -107,7 +107,7 @@ const PersonalDetails = ({ onComplete,setActiveFormIndex,activeFormIndex }) => {
             </div>
             <div className="text-center">
               <CardTitle className="text-3xl font-bold mb-2">Personal Details</CardTitle>
-              <p className="text-blue-100 text-lg">Let's start building your professional profile</p>
+              <p className="text-blue-100 text-lg">Let&apos;s start building your professional profile</p>
             </div>
           </div>
           

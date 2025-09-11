@@ -21,7 +21,10 @@ import { useRouter } from "next/navigation";
 interface SavedConversation {
   id: number;
   recordId: string;
-  content: any;
+  content: {
+    messages?: Array<{ text: string; isUser: boolean }>;
+    [key: string]: unknown;
+  };
   createdAt: string;
   aiAgentType: string;
 }
@@ -300,7 +303,7 @@ const SavedConversations = () => {
                           ) : (
                             <div className="space-y-3">
                               {Array.isArray(conversation.content) ? (
-                                conversation.content.map((msg: any, idx: number) => (
+                                conversation.content.map((msg: { role?: string; text?: string; isUser?: boolean; content?: string; transcript?: string }, idx: number) => (
                                   <div key={idx} className={`flex items-start gap-3 ${
                                     msg.role === 'user' ? 'flex-row-reverse' : ''
                                   }`}>

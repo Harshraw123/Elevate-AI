@@ -43,7 +43,7 @@ const handleClick = async () => {
       aiAgentType: 'resume_builder'
     });
 
-    if (response.data && response.data.length > 0) {
+    if (response.data && Array.isArray(response.data) && response.data.length > 0) {
       // Navigate to the resume builder page
       window.location.href = `/ai-tools/ai-resumeBuilder/${id}`;
     } else {

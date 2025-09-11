@@ -23,44 +23,36 @@ const themes = [
 
 export default function ThemeButton() {
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState("#3b82f6"); // Default to blue color instead of "light"
 
   // Load saved theme on mount and sync with context
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) {
-      setTheme(savedTheme);
-//override kr rha hoon themeColor
-      if (resumeInfo) {
-        setResumeInfo({
-          ...resumeInfo,
-          themeColor: savedTheme 
-        });
+    if (resumeInfo?.themeColor) {
+      setTheme(resumeInfo.themeColor);
+    } else {
+      // Set default theme if none exists
+      const defaultTheme = "#3b82f6";
+      setTheme(defaultTheme);
+      if (setResumeInfo && resumeInfo) {
+        setResumeInfo(prev => ({
+          ...prev,
+          themeColor: defaultTheme 
+        }));
       }
-    } else if (resumeInfo?.themeColor) {
-      // If no saved theme but context has theme, use context theme
-      setTheme(resumeInfo.themeColor);
-      localStorage.setItem("theme", resumeInfo.themeColor);
     }
-  }, []);
+  }, [resumeInfo?.themeColor, resumeInfo, setResumeInfo]);
 
-  // Sync local state with context theme changes
-  useEffect(() => {
-    if (resumeInfo?.themeColor && resumeInfo.themeColor !== theme) {
-      setTheme(resumeInfo.themeColor);
-      localStorage.setItem("theme", resumeInfo.themeColor);
-    }
-  }, [resumeInfo?.themeColor]);
+  // Remove the second useEffect to prevent infinite loops
 
-  const handleThemeChange = (themeName) => {
-    setTheme(themeName);
-    localStorage.setItem("theme", themeName);
+  const handleThemeChange = (themeColor) => {
+    setTheme(themeColor);
+    localStorage.setItem("theme", themeColor);
     
     // Update context with new theme
-    if (resumeInfo) {
+    if (resumeInfo && setResumeInfo) {
       setResumeInfo({
         ...resumeInfo,
-        themeColor: themeName
+        themeColor: themeColor
       });
     }
   };
@@ -80,10 +72,10 @@ export default function ThemeButton() {
             <button
               key={t.name}
               className={`w-5 h-5 rounded-full border ${
-                theme === t.name ? "ring-2 ring-offset-2 ring-blue-500" : ""
+                theme === t.color ? "ring-2 ring-offset-2 ring-blue-500" : ""
               }`}
               style={{ backgroundColor: t.color }}
-              onClick={() => handleThemeChange(t.name)}
+              onClick={() => handleThemeChange(t.color)}
               title={t.name}
             />
           ))}

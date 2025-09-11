@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Vapi from '@vapi-ai/web';
 import { v4 as uuidv4 } from 'uuid';
 import { useRouter } from 'next/navigation';
@@ -30,6 +30,15 @@ const VapiWidget: React.FC<VapiWidgetProps> = ({
   const [conversationMessages, setConversationMessages] = useState<Array<{role: string; text: string; timestamp: string}>>([]);
   const [sessionStartTime, setSessionStartTime] = useState<string | null>(null);
 
+  // Memoize callbacks to prevent unnecessary re-renders
+  const handleTranscript = useCallback((message: { role: string; text: string }) => {
+    onTranscript?.(message);
+  }, [onTranscript]);
+
+  const handleConnectionChange = useCallback((status: boolean) => {
+    onConnectionChange?.(status);
+  }, [onConnectionChange]);
+
   useEffect(() => {
     const vapiInstance = new Vapi(apiKey);
     setVapi(vapiInstance);
@@ -38,21 +47,21 @@ const VapiWidget: React.FC<VapiWidgetProps> = ({
     let currentConversation: Array<{role: string; text: string; timestamp: string}> = [];
     let sessionStart: string | null = null;
 
-    vapiInstance.on('call-start', () => {
+    const handleCallStart = () => {
       setIsConnected(true);
       currentConversation = []; // Clear previous conversation
       sessionStart = new Date().toISOString();
       setSessionStartTime(sessionStart);
       setConversationMessages([]); 
-      onConnectionChange?.(true); // 🔔 notify parent
-    });
+      handleConnectionChange(true);
+    };
 
-    vapiInstance.on('call-end', async () => {
+    const handleCallEnd = async () => {
       setIsConnected(false);
       setIsSpeaking(false);
       
       // Navigate immediately for better UX
-      onConnectionChange?.(false); // 🔕 notify parent
+      handleConnectionChange(false);
       router.push('/dashboard');
       
       // Save conversation in background (non-blocking)
@@ -78,12 +87,16 @@ const VapiWidget: React.FC<VapiWidgetProps> = ({
           }
         }, 100); // Small delay to ensure navigation completes first
       }
-    });
+    };
 
-    vapiInstance.on('speech-start', () => setIsSpeaking(true));
-    vapiInstance.on('speech-end', () => setIsSpeaking(false));
+    interface VapiMessage {
+      type: string;
+      role: string;
+      transcript: string;
+      [key: string]: unknown; // For any additional properties
+    }
 
-    vapiInstance.on('message', (message) => {
+    const handleMessage = (message: VapiMessage) => {
       if (message.type === 'transcript') {
         const newMsg = { 
           role: message.role, 
@@ -98,14 +111,28 @@ const VapiWidget: React.FC<VapiWidgetProps> = ({
         setConversationMessages(prev => [...prev, newMsg]);
         
         // Send to parent for UI updates
-        onTranscript?.({ role: message.role, text: message.transcript });
+        handleTranscript({ role: message.role, text: message.transcript });
       }
-    });
+    };
+
+    vapiInstance.on('call-start', handleCallStart);
+    vapiInstance.on('call-end', handleCallEnd);
+    const handleSpeechStart = () => setIsSpeaking(true);
+    const handleSpeechEnd = () => setIsSpeaking(false);
+    
+    vapiInstance.on('speech-start', handleSpeechStart);
+    vapiInstance.on('speech-end', handleSpeechEnd);
+    vapiInstance.on('message', handleMessage);
 
     return () => {
+      vapiInstance.off('call-start', handleCallStart);
+      vapiInstance.off('call-end', handleCallEnd);
+      vapiInstance.off('speech-start', handleSpeechStart);
+      vapiInstance.off('speech-end', handleSpeechEnd);
+      vapiInstance.off('message', handleMessage);
       vapiInstance.stop(); // Stop Vapi on unmount
     };
-  }, []); // Run once
+  }, [apiKey, assistantId, router, handleTranscript, handleConnectionChange]);
 
   const startCall = () => vapi?.start(assistantId);
   const endCall = () => vapi?.stop();

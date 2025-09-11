@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send } from "lucide-react";
@@ -47,11 +47,31 @@ const Aichat: React.FC<AichatProps> = ({ selectedQuery }) => {
   const { chatid } = useParams();
   console.log("Chat ID:", chatid);
 
-  useEffect(()=>{
-    if(chatid){
+  const GetOldMessages = useCallback(async () => {
+    try {
+      const response = await axios.get<Array<{ content?: unknown }>>(`/api/history?chatid=${chatid}`);
+      const storedContent = response.data?.[0]?.content;
+  
+      if (storedContent && Array.isArray(storedContent)) {
+        // Ensure the stored content matches Message[]
+        const parsedMessages: Message[] = storedContent.map((msg: { text?: string; isUser?: boolean }) => ({
+          text: msg.text || "",
+          isUser: msg.isUser ?? false,
+        }));
+        setMessages(parsedMessages);
+      } else {
+        console.warn("⚠️ No valid content found in history.");
+      }
+    } catch (e) {
+      console.error("Error fetching old messages:", e);
+    }
+  }, [chatid, setMessages]);
+
+  useEffect(() => {
+    if (chatid) {
       GetOldMessages();
     }
-  },[chatid])
+  }, [chatid, GetOldMessages]);
   // Scroll to bottom when new message added
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -74,28 +94,6 @@ const Aichat: React.FC<AichatProps> = ({ selectedQuery }) => {
     }
   };
 
-  //reload and purane message handle kre hai
-  const GetOldMessages = async () => {
-    try {
-      const response = await axios.get(`/api/history?chatid=${chatid}`);
-      const storedContent = response.data?.[0]?.content;
-  
-      if (storedContent && Array.isArray(storedContent)) {
-        // Ensure the stored content matches Message[]
-        const parsedMessages: Message[] = storedContent.map((msg: any) => ({
-          text: msg.text || "",
-          isUser: msg.isUser ?? false,
-        }));
-        setMessages(parsedMessages);
-      } else {
-        console.warn("⚠️ No valid content found in history.");
-      }
-    } catch (e) {
-      console.error("Error fetching old messages:", e);
-     
-    }
-  };
-  
 
   const sendData = async () => {
     if (!inputMessage) return;
@@ -115,11 +113,12 @@ const Aichat: React.FC<AichatProps> = ({ selectedQuery }) => {
       }
       setMessages(updatedUserMessages);
 
-      const response = await axios.post("/api/ai-carrer-chat-agent", {
-        userInput: inputMessage,
+      const userInput = inputMessage;
+      const response = await axios.post<{ output?: string }>(`/api/ai-carrer-chat-agent`, {
+        userInput: userInput,
       }, { timeout: 35000 });
 
-      if (response.data.output) {
+      if (response.data?.output) {
         const cleanOutput = response.data.output;
         const updatedAllMessages = [...updatedUserMessages, { text: cleanOutput, isUser: false }];
         setMessages(updatedAllMessages);
@@ -129,10 +128,18 @@ const Aichat: React.FC<AichatProps> = ({ selectedQuery }) => {
       }
 
       setInputMessage("");
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.error || error.message || "An error occurred";
+    } catch (error: unknown) {
+      let errorMessage = "An error occurred";
+      
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as { response?: { data?: { error?: string } } };
+        errorMessage = axiosError.response?.data?.error || "Server error";
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
       setError(errorMessage);
-      setMessages(prev => [...prev, { text: `Error: ${errorMessage}`, isUser: false }]);
+      setMessages((prev: Message[]) => [...prev, { text: `Error: ${errorMessage}`, isUser: false }]);
     } finally {
       setLoading(false);
     }
@@ -208,14 +215,15 @@ const Aichat: React.FC<AichatProps> = ({ selectedQuery }) => {
                     <ReactMarkdown
                       rehypePlugins={[rehypeHighlight]}
                       components={{
-                        p: ({ children }) => <p className="mb-2 text-sm sm:text-base">{children}</p>,
-                         //@ts-ignore
-                        code: ({ inline, children }) =>
-                          inline ? (
-                            <code className="text-pink-400 px-1 py-0.5 rounded text-xs sm:text-sm">{children}</code>
+                        p: (props: { children?: React.ReactNode }) => (
+                          <p className="mb-2 text-sm sm:text-base">{props.children}</p>
+                        ),
+                        code: (props: { inline?: boolean; children?: React.ReactNode }) =>
+                          props.inline ? (
+                            <code className="text-pink-400 px-1 py-0.5 rounded text-xs sm:text-sm">{props.children}</code>
                           ) : (
                             <pre className="p-2 sm:p-4 rounded-md overflow-x-auto text-xs sm:text-sm">
-                              <code>{children}</code>
+                              <code>{props.children}</code>
                             </pre>
                           )
                       }}
@@ -265,6 +273,6 @@ const Aichat: React.FC<AichatProps> = ({ selectedQuery }) => {
   );
 };
 
-export default function Page(props: any) {
-  return <Aichat {...props} />;
+export default function Page() {
+  return <Aichat />;
 }

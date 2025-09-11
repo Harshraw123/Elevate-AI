@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
             .returning();
 
         return NextResponse.json(insertedUsers[0]);
-    } catch (e: any) {
-        return NextResponse.json({ error: e.message || "Server error" }, { status: 500 });
+    } catch (e: unknown) {
+        return NextResponse.json({ error: e instanceof Error ? e.message : "Server error" }, { status: 500 });
     }
 }

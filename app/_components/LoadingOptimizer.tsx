@@ -27,7 +27,8 @@ const LoadingOptimizer = () => {
       if (process.env.NODE_ENV === 'production') {
         const stylesheets = document.querySelectorAll('link[rel="stylesheet"]');
         stylesheets.forEach(sheet => {
-          if (sheet.href.includes('unused') || sheet.href.includes('old')) {
+          const linkElement = sheet as HTMLLinkElement;
+          if (linkElement.href.includes('unused') || linkElement.href.includes('old')) {
             sheet.remove();
           }
         });
