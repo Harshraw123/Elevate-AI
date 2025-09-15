@@ -45,7 +45,6 @@ const Aichat: React.FC<AichatProps> = ({ selectedQuery }) => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const { chatid } = useParams();
-  console.log("Chat ID:", chatid);
 
   const GetOldMessages = useCallback(async () => {
     try {
@@ -87,7 +86,6 @@ const Aichat: React.FC<AichatProps> = ({ selectedQuery }) => {
         content: updatedMessages,
         recordId: chatid,
       });
-      console.log("✅ History updated:", result.data);
       
     } catch (err) {
       console.error("❌ Failed to update history:", err);

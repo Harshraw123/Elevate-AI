@@ -105,7 +105,6 @@ const ProfessionalExperience = ({ onComplete, setActiveFormIndex, activeFormInde
     setLoading(true);
     try {
       const res = await axios.post('/api/ai-experience-summery', { jobTitle: exp.title });
-      console.log('AI Response:', res.data.output);
       if (Array.isArray(res.data.output)) {
         // Format as HTML list for the rich text editor
         const bulletPoints = res.data.output.map(point => `<li>${point}</li>`).join('');

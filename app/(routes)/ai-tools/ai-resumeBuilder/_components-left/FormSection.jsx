@@ -4,8 +4,8 @@ import PersonalDetails from './PersonalDetails'
 import ThemeButton from './Theme'
 import Summery from './Summery'
 import ProfessionalExperience from './ProfessionalExperience'
-import EducationDetails from '../_components-left/EducationDetails'
-import Skills from '../_components-left/Skills'
+import EducationDetails from './EducationDetails'
+import Skills from './Skills'
 
 const FormSection = () => {
   const [activeFormIndex, setActiveFormIndex] = useState(1)

@@ -26,7 +26,7 @@ const WelcomeBanner: React.FC = () => {
         <div className="absolute inset-0 flex items-center justify-center px-4">
           <div className="w-full max-w-3xl">
             {/* Glassmorphism Card */}
-            <div className="bg-black/20 backdrop-blur-md p-6 sm:p-8 rounded-2xl shadow-lg text-center flex flex-col items-center">
+            <div className=" p-6 sm:p-8 rounded-2xl shadow-lg text-center flex flex-col items-center">
               
               {/* Icon Row */}
               <div className="flex gap-3 sm:gap-5 mb-5">

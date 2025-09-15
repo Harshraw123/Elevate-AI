@@ -22,12 +22,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing file or recordId" }, { status: 400 });
     }
 
-    console.log("🔹 Received resume file:", resumefile.name);
     const user=await currentUser();
 
     const loader= new WebPDFLoader(resumefile)
     const docs=await loader.load();
-    console.log("Loaded documents:",docs[0])
 
     //resume file ko blob me taki cloud pe ja ske
 

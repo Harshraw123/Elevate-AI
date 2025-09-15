@@ -85,7 +85,7 @@ export function AppSidebar() {
                                 if (item.scrollId && isDashboardPage) {
                                     href = `#${item.scrollId}`;
                                     onClick = (e) => handleSidebarClick(e, item.scrollId!);
-                                } else if (item.title === 'AI Tools' && (path === '/billing' || path === '/profile')) {
+                                } else if ((item.title === 'AI Tools' || item.title === 'My History') && (path === '/billing' || path === '/profile')) {
                                     href = '/dashboard';
                                 }
 

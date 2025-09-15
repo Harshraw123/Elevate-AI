@@ -26,7 +26,6 @@ const Modal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) =>
     const file = event.target.files?.[0];
     if (file) {
       setFile(file);
-      console.log(file.name);
       setError(null);
     }
   };
@@ -44,7 +43,6 @@ const Modal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) =>
 
       const response = await axios.post("/api/ai-resume-agent", formData);
 
-      console.log("✅ AI Analysis Result:", response.data);
       alert("✅ Resume uploaded and analysis started!");
 
       if (response) {

@@ -45,14 +45,11 @@ const Summery = ({ onComplete, setActiveFormIndex, activeFormIndex }) => {
       const response = await axios.post('/api/ai-resume-summery', { jobTitle });
       const result = response.data.output;
 
-      console.log('API Response:', response.data);
-      console.log('Extracted output:', result);
 
       // Expecting JSON array from AI
       if (Array.isArray(result)) {
         setSummaryOptions(result);
     
-        console.log('Summary options set:', result);
       } else {
         console.error("Invalid AI response:", result);
         alert("AI did not return valid summaries.");

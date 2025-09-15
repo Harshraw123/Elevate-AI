@@ -4,27 +4,14 @@ import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
 
 export async function POST(req: Request) {
-  console.log("🚀 Starting cover letter generation request");
-
   try {
     const { coverLetterId, userName, position, resumeSummary, jobDescription } =
       await req.json();
 
-    console.log("📝 Request data:", {
-      coverLetterId,
-      userName: userName || "Not provided",
-      position: position || "Not provided",
-      resumeSummary: resumeSummary ? "Provided" : "Not provided",
-      jobDescription: jobDescription ? "Provided" : "Not provided",
-    });
-
     const user = await currentUser();
     const userEmail = user?.primaryEmailAddress?.emailAddress || "unknown";
 
-    console.log("👤 User:", userEmail);
-
     // Send Inngest Event
-    console.log("📤 Sending event to Inngest...");
     const resultIds = await inngest.send({
       name: "AiCoverLetterAgent",
       data: {
@@ -38,7 +25,6 @@ export async function POST(req: Request) {
     });
 
     const runId = resultIds.ids[0];
-    console.log("🟢 Inngest Run ID:", runId);
 
     interface RunOutput {
       response?: {
@@ -50,7 +36,6 @@ export async function POST(req: Request) {
     while (true) {
       runStatus = (await getRuns(runId)) as { data?: Array<{ status?: string; output?: RunOutput }> };
       const status = runStatus?.data?.[0]?.status;
-      console.log("⏳ Inngest run status:", status);
       if (status === "Completed") break;
 
       await new Promise((resolve) => setTimeout(resolve, 500));

@@ -3,8 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import Provider from "./Provider";
-import PerformanceMonitor from "./_components/PerformanceMonitor";
-import TTFBMonitor from "./_components/TTFBMonitor";
+// import PerformanceMonitor from "./_components/PerformanceMonitor";
+// import TTFBMonitor from "./_components/TTFBMonitor";
 import LoadingOptimizer from "./_components/LoadingOptimizer";
 
 // Fonts
@@ -50,8 +50,8 @@ export default function RootLayout({
           <LoadingOptimizer />
           <Provider>
             {children}
-            <PerformanceMonitor />
-            <TTFBMonitor />
+            {/* <PerformanceMonitor />
+            <TTFBMonitor /> */}
           </Provider>
         </body>
       </html>

@@ -3,7 +3,7 @@ import React from 'react';
 const EmptyState = () => {
   const handleExploreClick = () => {
     // Your navigation logic here
-    console.log('Navigate to AI tools');
+    // Navigate to AI tools
   };
 
   return (

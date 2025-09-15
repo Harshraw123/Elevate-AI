@@ -28,7 +28,6 @@ const RoadmapDialog = ({
 
   const generateRoadmap = async () => {
     const roadmapId = uuidv4();
-    console.log("Generating roadmap with ID:", roadmapId);
     setLoading(true);
 
     try {
@@ -38,7 +37,6 @@ const RoadmapDialog = ({
       });
 
       const response = result.data.output;
-      console.log("AI Roadmap response:", response);
 
       if (response) {
   ;

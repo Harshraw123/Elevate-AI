@@ -114,7 +114,6 @@ const History: React.FC = () => {
     try {
       const response = await axios.get<HistoryItem[]>('/api/history');
       setHistoryData(response.data);
-      console.log('hello', response.data);
     } catch (e) {
       setError('Failed to load your history. Please try again later.');
       console.error('Error fetching history data:', e);
@@ -177,7 +176,7 @@ const History: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen ">
+    <div id="history" className="min-h-screen ">
       <div className="max-w-7xl mx-auto px-6 py-12">
         {/* Header Section */}
         <div className="mb-12">
