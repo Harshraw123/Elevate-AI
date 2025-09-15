@@ -61,10 +61,11 @@ const Hero: React.FC = () => {
       }
       
       if (imageRef.current) {
+        // Ensure image is visible on mobile by setting a fallback
         g.set(imageRef.current, {
-          opacity: 0,
-          scale: 0.8,
-          rotationX: 15
+          opacity: typeof window !== 'undefined' && window.innerWidth < 768 ? 1 : 0,
+          scale: typeof window !== 'undefined' && window.innerWidth < 768 ? 1 : 0.8,
+          rotationX: typeof window !== 'undefined' && window.innerWidth < 768 ? 0 : 15
         });
       }
 
@@ -131,13 +132,19 @@ const Hero: React.FC = () => {
         tl.to(ctaRef.current, { opacity: 1, y: 0, duration: 0.8, ease: "back.out(1.7)" }, "-=0.4");
       }
       if (imageRef.current) {
-        tl.to(imageRef.current, {
-          opacity: 1,
-          scale: 1,
-          rotationX: 0,
-          duration: 1.2,
-          ease: "power2.out"
-        }, "-=0.6");
+        // Skip animation on mobile for immediate visibility
+        const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+        if (isMobile) {
+          g.set(imageRef.current, { opacity: 1, scale: 1, rotationX: 0 });
+        } else {
+          tl.to(imageRef.current, {
+            opacity: 1,
+            scale: 1,
+            rotationX: 0,
+            duration: 1.2,
+            ease: "power2.out"
+          }, "-=0.6");
+        }
       }
 
       // ScrollTrigger for parallax and fade effects (excluding badge)
@@ -336,7 +343,8 @@ const Hero: React.FC = () => {
                 width={1200}
                 height={600}
                 priority
-                className="w-full h-auto object-cover"
+                className="w-full h-auto object-cover block"
+                style={{ minHeight: '200px' }}
               />
               <div className="absolute top-4 md:top-6 left-4 md:left-6 bg-white/10 backdrop-blur-md rounded-lg md:rounded-xl px-3 md:px-4 py-1 md:py-2 border border-white/20">
                 <div className="flex items-center gap-2 text-white text-xs md:text-sm">
