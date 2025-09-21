@@ -6,37 +6,37 @@ const Features = () => {
       icon: "📄",
       title: "Resume Analysis",
       description: "AI-powered resume scanning and optimization suggestions to make your resume stand out to employers.",
-      gradient: "gradient-primary"
+      gradient: "bg-gradient-to-br from-blue-500 to-purple-600"
     },
     {
       icon: "🗺️",
       title: "Study Roadmaps",
       description: "Personalized learning paths and skill development roadmaps tailored to your career goals.",
-      gradient: "gradient-secondary"
+      gradient: "bg-gradient-to-br from-green-500 to-teal-600"
     },
     {
       icon: "💬",
       title: "Query Resolution",
       description: "Get instant answers to your career questions from our intelligent AI assistant.",
-      gradient: "gradient-accent"
+      gradient: "bg-gradient-to-br from-pink-500 to-rose-600"
     },
     {
       icon: "🎯",
       title: "Career Matching",
       description: "Discover careers that match your skills, interests, and personality profile.",
-      gradient: "gradient-warm"
+      gradient: "bg-gradient-to-br from-orange-500 to-red-600"
     },
     {
       icon: "📊",
       title: "Skill Assessment",
       description: "Comprehensive skill evaluation and gap analysis to identify areas for improvement.",
-      gradient: "gradient-primary"
+      gradient: "bg-gradient-to-br from-indigo-500 to-blue-600"
     },
     {
       icon: "🚀",
       title: "Interview Prep",
       description: "Practice with AI-powered mock interviews and get feedback to ace your next interview.",
-      gradient: "gradient-secondary"
+      gradient: "bg-gradient-to-br from-cyan-500 to-blue-600"
     }
   ];
 
@@ -45,7 +45,7 @@ const Features = () => {
       <div className="container mx-auto px-6">
         <div className="text-center mb-16 animate-fade-in">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            <span className="text-gradient">Powerful Features</span>
+            <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">Powerful Features</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Everything you need to accelerate your career growth and land your dream job
@@ -56,7 +56,7 @@ const Features = () => {
           {features.map((feature, index) => (
             <Card 
               key={index} 
-              className="bg-card/50 backdrop-blur-sm border-border/50 hover: transition-all duration-300 transform hover: animate-slide-up"
+              className="bg-card/50 backdrop-blur-sm border-border/50 hover:shadow-lg hover:scale-105 transition-all duration-300 transform"
               style={{animationDelay: `${index * 0.1}s`}}
             >
               <CardHeader>
@@ -76,6 +76,16 @@ const Features = () => {
           ))}
         </div>
       </div>
+      
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+          animation: fadeIn 0.8s ease-out forwards;
+        }
+      `}</style>
     </section>
   );
 };

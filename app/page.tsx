@@ -1,6 +1,6 @@
 'use client'
-import Navbar from './_components/Navbar'
-import Feature from './_components/Feature'
+import Header from './_components/Navbar'
+import Features from './_components/Feature'
 import CTA from './_components/CTA'
 import LoadingSpinner from './_components/LoadingSpinner'
 import dynamic from 'next/dynamic';
@@ -33,9 +33,9 @@ import { TrendingUp } from 'lucide-react'
 const Index = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Navbar />
+      <Header />
       <Hero />
-      <Feature />
+      <Features />
       <div className="text-center mb-12 px-4">
   <h1 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight mb-4">
     Success Stories from Our Users

@@ -31,6 +31,10 @@ interface SessionStats {
 
 const CareerCoach = () => {
   const VAPI_KEY = process.env.NEXT_PUBLIC_VAPI_KEY;
+  
+  if (!VAPI_KEY) {
+    console.error("VAPI_KEY is not configured");
+  }
   const { user } = useUser();
   const profile = user?.imageUrl;
   const router = useRouter();

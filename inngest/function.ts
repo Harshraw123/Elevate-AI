@@ -109,7 +109,7 @@ Do not include any extra text outside of the JSON array.`,
 
 export const handleAiResumeBulletPoints = inngest.createFunction(
   { id: 'AiResumeBulletPoints' },
-  { event: 'AiResumeBulletPoints' },
+  { event: 'AiResumeBulletPoints' },  //same event name jo mene api route me dia tha
   async ({ event }) => {
     const { jobTitle } = event?.data;
     if (!jobTitle) return { message: "Error: No job title provided." };

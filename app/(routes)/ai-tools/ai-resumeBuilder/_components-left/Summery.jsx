@@ -34,7 +34,7 @@ const Summery = ({ onComplete, setActiveFormIndex, activeFormIndex }) => {
     }
   }, [summary, updateSummary, resumeInfo?.summary]);
 
-  const generateAiSummeries = async () => {
+  const generateAiSummaries = async () => {
     if (!jobTitle) {
       alert("Please add a Job Title first.");
       return;
@@ -68,7 +68,7 @@ const Summery = ({ onComplete, setActiveFormIndex, activeFormIndex }) => {
 
       <div className="flex justify-between items-center p-2">
         <h2>Add Summary</h2>
-        <Button onClick={generateAiSummeries} className="border-purple-400" disabled={loading}>
+        <Button onClick={generateAiSummaries} className="border-purple-400" disabled={loading}>
           <h1 className="text-purple-400">{loading ? "Generating..." : "Generate with AI"}</h1>
         </Button>
       </div>

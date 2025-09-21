@@ -10,7 +10,7 @@ export async function POST(request: Request) {
 
   // Send Inngest event
   const resultIds = await inngest.send({
-    name: "AiResumeSummery",
+    name: "AiResumeSummary",
     data: { jobTitle }
   });
 

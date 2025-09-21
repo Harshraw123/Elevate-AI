@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowDown, Sparkles, Zap } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback, useState } from "react";
 
 interface GSAPModule {
   gsap: typeof import('gsap').gsap;
@@ -40,6 +40,33 @@ const Hero: React.FC = () => {
   const blob3Ref = useRef<HTMLDivElement>(null);
   const badgeRef = useRef<HTMLDivElement>(null);
   const particlesRef = useRef<HTMLDivElement>(null);
+  
+  // State for image loading
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  // Preload image on component mount with multiple format support
+  useEffect(() => {
+    const preloadImage = () => {
+      const img = new window.Image();
+      img.onload = () => {
+        setImageLoaded(true);
+        // Add a small delay to ensure smooth transition
+        setTimeout(() => {
+          if (imageRef.current) {
+            imageRef.current.style.visibility = 'visible';
+          }
+        }, 100);
+      };
+      img.onerror = () => setImageError(true);
+      
+      // Try AVIF first, fallback to other formats if needed
+      img.src = '/Hero.avif';
+    };
+
+    // Start preloading immediately
+    preloadImage();
+  }, []);
 
   const initAnimations = useCallback(async (): Promise<(() => void) | void> => {
     if (typeof window === 'undefined') return;
@@ -61,11 +88,12 @@ const Hero: React.FC = () => {
       }
       
       if (imageRef.current) {
-        // Ensure image is visible on mobile by setting a fallback
+        // Always start with visible image to prevent loading issues
+        const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
         g.set(imageRef.current, {
-          opacity: typeof window !== 'undefined' && window.innerWidth < 768 ? 1 : 0,
-          scale: typeof window !== 'undefined' && window.innerWidth < 768 ? 1 : 0.8,
-          rotationX: typeof window !== 'undefined' && window.innerWidth < 768 ? 0 : 15
+          opacity: 1, // Always start visible
+          scale: isMobile ? 1 : 0.95, // Slightly smaller scale for animation
+          rotationX: isMobile ? 0 : 5 // Reduced rotation for smoother effect
         });
       }
 
@@ -132,18 +160,15 @@ const Hero: React.FC = () => {
         tl.to(ctaRef.current, { opacity: 1, y: 0, duration: 0.8, ease: "back.out(1.7)" }, "-=0.4");
       }
       if (imageRef.current) {
-        // Skip animation on mobile for immediate visibility
+        // Smooth animation for all devices with faster timing
         const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-        if (isMobile) {
-          g.set(imageRef.current, { opacity: 1, scale: 1, rotationX: 0 });
-        } else {
+        if (!isMobile) {
           tl.to(imageRef.current, {
-            opacity: 1,
             scale: 1,
             rotationX: 0,
-            duration: 1.2,
+            duration: 0.8, // Faster animation
             ease: "power2.out"
-          }, "-=0.6");
+          }, "-=0.4");
         }
       }
 
@@ -246,13 +271,16 @@ const Hero: React.FC = () => {
 
   useEffect(() => {
     let cleanup: (() => void) | void;
-    initAnimations().then((cleanupFn) => {
-      cleanup = cleanupFn;
-    });
+    // Only initialize animations after image has loaded or errored
+    if (imageLoaded || imageError) {
+      initAnimations().then((cleanupFn) => {
+        cleanup = cleanupFn;
+      });
+    }
     return () => {
       if (cleanup) cleanup();
     };
-  }, [initAnimations]);
+  }, [initAnimations, imageLoaded, imageError]);
 
   return (
     <section
@@ -335,23 +363,56 @@ const Hero: React.FC = () => {
           </div>
 
           {/* Image section */}
-          <div ref={imageRef} className="relative mx-auto max-w-4xl md:max-w-6xl perspective-1000">
+          <div ref={imageRef} className="relative mx-auto max-w-4xl md:max-w-6xl perspective-1000" style={{ visibility: 'visible', minHeight: '200px' }}>
             <div className="relative bg-white/5 backdrop-blur-xl rounded-2xl md:rounded-3xl overflow-hidden border border-white/20 shadow-2xl">
+              {/* Loading placeholder */}
+              {!imageLoaded && !imageError && (
+                <div className="w-full h-[300px] md:h-[600px] bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-slate-400 text-sm">Loading interface...</p>
+                  </div>
+                </div>
+              )}
+              
+              {/* Error fallback */}
+              {imageError && (
+                <div className="w-full h-[300px] md:h-[600px] bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-slate-700 rounded-lg flex items-center justify-center mb-4 mx-auto">
+                      <Sparkles className="w-8 h-8 text-cyan-400" />
+                    </div>
+                    <p className="text-slate-300 text-lg font-medium">AI Career Coach</p>
+                    <p className="text-slate-400 text-sm mt-2">Interface Preview</p>
+                  </div>
+                </div>
+              )}
+              
+              {/* Main image */}
               <Image
                 src="/Hero.avif"
                 alt="AI Career Coach Interface"
                 width={1200}
                 height={600}
                 priority
-                className="w-full h-auto object-cover block"
+                className={`w-full h-auto object-cover block transition-opacity duration-500 ${
+                  imageLoaded ? 'opacity-100' : 'opacity-0'
+                }`}
                 style={{ minHeight: '200px' }}
+                onLoad={() => setImageLoaded(true)}
+                onError={() => setImageError(true)}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
               />
-              <div className="absolute top-4 md:top-6 left-4 md:left-6 bg-white/10 backdrop-blur-md rounded-lg md:rounded-xl px-3 md:px-4 py-1 md:py-2 border border-white/20">
-                <div className="flex items-center gap-2 text-white text-xs md:text-sm">
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                  Live AI Assistant
+              
+              {/* Live indicator overlay */}
+              {(imageLoaded || imageError) && (
+                <div className="absolute top-4 md:top-6 left-4 md:left-6 bg-white/10 backdrop-blur-md rounded-lg md:rounded-xl px-3 md:px-4 py-1 md:py-2 border border-white/20">
+                  <div className="flex items-center gap-2 text-white text-xs md:text-sm">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    Live AI Assistant
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>

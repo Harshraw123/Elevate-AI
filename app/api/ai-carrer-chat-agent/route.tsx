@@ -5,14 +5,19 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
 
   const{userInput}=await request.json();
+
+  //event trigger ho rha inngest.send event bheta hai
   const resultIds=await inngest.send({
-    name:"AiChat",
+    name:"AiChat",  //event ka naam
     data:{
       userInput:userInput
     }
 
   })
-const runId=resultIds.ids[0];
+const runId=resultIds.ids[0];  //ingest can send several sun hum pehla wala le rhe
+
+//yha polling kr rhe basically status check kr rhe background jobs ka har 500 ms pe
+
 let runStatus: RunStatus;
 while(true){
   runStatus=await getRuns(runId)
@@ -22,7 +27,7 @@ while(true){
 
 }
 const content = runStatus.data[0].output?.response?.output?.[0]?.content || "No response.";
-return NextResponse.json({ output: content });
+return NextResponse.json({ output: content });  //result aane ke baad frontend pe send kr rha
 
 
 
@@ -40,6 +45,9 @@ interface RunStatus {
     };
   }>;
 }
+
+//getRuns ek helper function hai jo server pe caal krta hai or RunId ke basis pe current job ka status lata hai
+
 
 async function getRuns(runId: string): Promise<RunStatus> {
   const result = await axios.get<RunStatus>(
