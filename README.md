@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Elevate AI — Intelligent Career Growth Platform
 
-## Getting Started
+Elevate AI is a modern SaaS platform designed to empower individuals and professionals through AI-driven career tools. It combines intelligent automation and data-driven insights to help users create standout resumes, cover letters, personalized career roadmaps, and receive interactive coaching via chat or voice.
 
-First, run the development server:
+Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Elevate AI provides an integrated suite of AI-powered modules that simplify every stage of professional growth. Whether you are preparing for your first job or advancing your career, Elevate AI delivers tailored support through natural language understanding and smart content generation.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The platform’s purpose is to make career building faster, smarter, and more effective through automation and personalization.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Core Features
+1. AI Resume Generator
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Generate a professional and optimized resume instantly using AI.
 
-## Learn More
+Automatically formats user data into an ATS-friendly layout.
 
-To learn more about Next.js, take a look at the following resources:
+Supports multiple design templates.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Exports in common formats such as PDF or DOCX.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2. AI Cover Letter Creator
 
-## Deploy on Vercel
+Create persuasive and customized cover letters based on job descriptions and personal achievements.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Context-aware generation aligned with resume content.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Option to set tone (formal, confident, concise).
+
+Professionally structured output ready for submission.
+
+3. AI Career Coach
+
+A conversational virtual coach that provides real-time guidance on career decisions, interview preparation, and skill improvement.
+
+Chat-based and voice-enabled interaction.
+
+Personalized recommendations based on user goals and experience.
+
+Insights driven by current job market trends.
+
+4. AI Career Roadmap Generator
+
+Design a step-by-step learning and growth roadmap tailored to specific career goals.
+
+Suggests skills, tools, and technologies to learn.
+
+Defines milestones and timelines for progress tracking.
+
+Generates adaptive plans based on current skill level.
+
+5. AI Voice Agent
+
+An intelligent voice assistant that interacts with users through natural speech.
+
+Real-time voice conversation and guidance.
+
+Ideal for career Q&A, interactive sessions, and coaching.
+
+Supports multi-language configurations.
+
+Technology Stack
+
+Frontend: Next.js, React, TypeScript, Tailwind CSS
+
+Backend:  PostgreSQL , Next js
+
+AI & NLP: Gemini API, custom prompt engineering
+
+Voice Integration: Vapi / WebRTC 
+
+ORM: Neon
+
+Deployment: Vercel
