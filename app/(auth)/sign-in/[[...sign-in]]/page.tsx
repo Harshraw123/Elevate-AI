@@ -28,7 +28,7 @@ export default function Page() {
                 </div>
             </div>
 
-            {/* Right side - Sign in Form */}
+            {/* left side - Sign in Form */}
             <div className="w-full lg:w-1/2 xl:w-2/5 flex items-center justify-center p-6 lg:p-12">
                 <div className="w-full max-w-md space-y-8">
                     {/* Mobile image preview */}
@@ -64,7 +64,7 @@ export default function Page() {
                                         card: "shadow-none border-none",
                                      
                                
-                                        socialButtonsBlockButton: "bg-gray-800 border-gray-700 hover:bg-gray-750 text-white transition-all duration-200",
+                                        socialButtonsBlockButton: "bg-gray-800 border-gray-700 hover:bg-gray-750 text-blue-500 transition-all duration-200",
                                         formButtonPrimary: "bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-all duration-200",
                                         formFieldInput: "bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 transition-all duration-200",
                                         footerActionLink: "text-purple-400 hover:text-purple-300 transition-colors duration-200"
