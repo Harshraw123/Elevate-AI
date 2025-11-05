@@ -5,8 +5,10 @@ import CareerCoach from "./CareerCoach";
 export default async function CareerCoachPage() {
   const { has } = await auth();
 
-  // Pro OR Premium check
-  const hasAccess = await has({ plan: ["pro", "premium"] });
+  // Pro OR Premium check (cast to relax Clerk type for custom key)
+  const hasAccess =
+    (await (has as any)({ plan: "pro" })) ||
+    (await (has as any)({ plan: "premium" }));
 
   if (!hasAccess) {
     redirect("/billing");

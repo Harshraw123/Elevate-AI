@@ -30,7 +30,7 @@ interface SessionStats {
 }
 
 const CareerCoach = () => {
-  const VAPI_KEY = process.env.NEXT_PUBLIC_VAPI_KEY;
+  const VAPI_KEY = process.env.NEXT_PUBLIC_VAPI_KEY ?? "";
   const { user } = useUser();
   const profile = user?.imageUrl;
   const router = useRouter();

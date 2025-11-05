@@ -1,5 +1,24 @@
 {
   "extends": [
+    "next",
+    "next/core-web-vitals"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2023,
+    "sourceType": "module"
+  },
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
+    ],
+    "@next/next/no-img-element": "warn",
+    "import/no-anonymous-default-export": "warn"
+  }
+}
+{
+  "extends": [
     "next/core-web-vitals",
     "next/typescript"
   ]

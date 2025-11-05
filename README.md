@@ -1,74 +1,140 @@
 Elevate AI — Intelligent Career Growth Platform
 
-Elevate AI is a modern SaaS platform designed to empower individuals and professionals through AI-driven career tools. It combines intelligent automation and data-driven insights to help users create standout resumes, cover letters, personalized career roadmaps, and receive interactive coaching via chat or voice.
+Elevate AI is a modern SaaS platform that empowers professionals with AI-driven career tools. It helps users generate standout resumes and cover letters, build personalized roadmaps, and get interactive coaching via chat and voice — all optimized for performance and a smooth UX.
+
 
 Overview
 
-Elevate AI provides an integrated suite of AI-powered modules that simplify every stage of professional growth. Whether you are preparing for your first job or advancing your career, Elevate AI delivers tailored support through natural language understanding and smart content generation.
+Elevate AI provides an integrated suite of AI modules to simplify every stage of professional growth. Whether you are preparing for your first job or advancing your career, Elevate AI delivers tailored support through natural language understanding and smart content generation.
 
-The platform’s purpose is to make career building faster, smarter, and more effective through automation and personalization.
 
-Core Features
-1. AI Resume Generator
+Key Features
 
-Generate a professional and optimized resume instantly using AI.
+1) AI Resume Builder
+- Generate ATS-friendly resumes from structured inputs or extracted text
+- Multiple templates and PDF export
+- Resume analysis with scores, strengths/weaknesses, and improvement tips
 
-Automatically formats user data into an ATS-friendly layout.
+2) AI Cover Letter Generator
+- Job-aware, concise, professionally formatted letters
+- Tone customization and resume-context alignment
 
-Supports multiple design templates.
+3) AI Career Coach (Chat + Voice)
+- Real-time conversational guidance on careers, interviews, and skills
+- Voice-enabled via Vapi widget
 
-Exports in common formats such as PDF or DOCX.
+4) AI Career Roadmap
+- Step-by-step upskilling plan with milestones and recommended resources
 
-2. AI Cover Letter Creator
 
-Create persuasive and customized cover letters based on job descriptions and personal achievements.
+Tech Stack
 
-Context-aware generation aligned with resume content.
+- Frontend: Next.js 15, React 18, TypeScript, Tailwind CSS
+- Backend: Next.js API Routes, Inngest for background/agent orchestration
+- AI: Gemini models via @inngest/agent-kit
+- DB/ORM: PostgreSQL (Neon), Drizzle ORM
+- Voice: Vapi Web SDK
+- Deployment: Vercel
 
-Option to set tone (formal, confident, concise).
 
-Professionally structured output ready for submission.
+Architecture (High-Level)
 
-3. AI Career Coach
+- App Router with colocated UI and API routes under `app/`
+- AI agents composed with `@inngest/agent-kit` in `inngest/function.ts`
+- API endpoints for agents and workflows under `app/api/*`
+- Drizzle schema and DB config in `configs/`
+- Shared UI components under `components/ui`
 
-A conversational virtual coach that provides real-time guidance on career decisions, interview preparation, and skill improvement.
 
-Chat-based and voice-enabled interaction.
+Getting Started
 
-Personalized recommendations based on user goals and experience.
+Prerequisites
+- Node.js 18+
+- A PostgreSQL database (Neon recommended)
+- Gemini API key
+- (Optional) Vapi key for voice capabilities
 
-Insights driven by current job market trends.
+Install
+```
+npm install
+```
 
-4. AI Career Roadmap Generator
+Environment Variables
+Create a `.env.local` at the project root and add the following:
+```
+# AI
+GEMINI_API_KEY=your_gemini_key
 
-Design a step-by-step learning and growth roadmap tailored to specific career goals.
+# Voice (optional; used on client for the Vapi widget)
+NEXT_PUBLIC_VAPI_KEY=your_vapi_public_key
 
-Suggests skills, tools, and technologies to learn.
+# Database (Neon serverless connection)
+NEXT_PUBLIC_NEON_DB_CONNECTION_STRING=postgres://user:password@host/db?sslmode=require
+```
+Note: Do not commit real secrets. Keep keys out of client-exposed variables unless absolutely required. Server-only secrets should not be prefixed with `NEXT_PUBLIC_`.
 
-Defines milestones and timelines for progress tracking.
+Run
+```
+npm run dev
+```
+App runs at `http://localhost:3000`.
 
-Generates adaptive plans based on current skill level.
+Build & Start
+```
+npm run build
+npm start
+```
 
-5. AI Voice Agent
+Scripts
+- `dev`: Start Next.js in development
+- `build`: Build for production
+- `start`: Run production server
+- `lint`: Run ESLint
 
-An intelligent voice assistant that interacts with users through natural speech.
 
-Real-time voice conversation and guidance.
+Core Modules & Paths
 
-Ideal for career Q&A, interactive sessions, and coaching.
+- Dashboard and tools UI: `app/(routes)/dashboard`, `app/(routes)/ai-tools/*`
+- Agents and workflows: `inngest/function.ts`
+- API routes:
+  - `app/api/ai-carrer-chat-agent/route.tsx`
+  - `app/api/ai-cover-letter-agent/route.tsx`
+  - `app/api/ai-experience-summery/route.ts`
+  - `app/api/ai-resume-agent/route.ts`
+  - `app/api/ai-resume-summery/route.ts`
+  - `app/api/ai-roadmap-agent/route.tsx`
+  - `app/api/history/route.ts`
+  - `app/api/save-conversation/route.ts`
+  - `app/api/save-transcript/route.ts`
 
-Supports multi-language configurations.
 
-Technology Stack
+AI Models & Agents
 
-Frontend: Next.js, React, TypeScript, Tailwind CSS
+- Gemini models configured via `@inngest/agent-kit` in `inngest/function.ts`
+- `GEMINI_API_KEY` is required at runtime
+- Agents include: Career Coach, Resume Summary/Bullet Points, Resume Analyzer, Cover Letter, Roadmap Generator
 
-Backend:  PostgreSQL , Next js
 
-AI & NLP: Gemini API, custom prompt engineering
+Database
 
-Voice Integration: Vapi / WebRTC 
+- Drizzle ORM with Neon PostgreSQL
+- Connection string read from `NEXT_PUBLIC_NEON_DB_CONNECTION_STRING`
+- Schema under `configs/schema.ts`; DB config in `configs/db.tsx`
 
-ORM: Neon
 
-Deployment: Vercel
+Security & Keys
+
+- Keep `GEMINI_API_KEY` server-side (do not expose publicly)
+- Only use `NEXT_PUBLIC_*` for values that must be readable by the browser
+- Never commit `.env*` files
+
+
+Performance & DX
+
+- See `PERFORMANCE_OPTIMIZATION.md` and `TTFB_OPTIMIZATION.md` for guidance
+- Includes lazy-loading, skeletons, and TTFB monitors in `app/_components/*`
+
+
+License
+
+Proprietary — all rights reserved unless explicitly stated otherwise.
